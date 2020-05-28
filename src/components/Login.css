@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+}
+
+.login-page {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #5d9714;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+img {
+    padding-left: 6px;
+}
+
+.login-form {
+    width: fit-content;
+    background-color: #525351;
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
