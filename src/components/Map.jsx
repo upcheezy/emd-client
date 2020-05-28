@@ -8,7 +8,6 @@ export default class Map extends Component {
     
     componentDidMount() {
         mapboxgl.accessToken = config.MAPBOX_API_TOKEN
-        console.log(config.MAPBOX_API_TOKEN)
         var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
