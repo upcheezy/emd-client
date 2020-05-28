@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import './Map.css';
 import mapboxgl from 'mapbox-gl';
-import config from '../config'
-var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
+import ReactMapboxGl from 'react-mapbox-gl';
+import DrawControl from 'react-mapbox-gl-draw';
+import config from '../config';
+// var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
+import * from '@mapbox/mapbox-gl-geocoder';
 
 export default class Map extends Component {
     
