@@ -3,13 +3,14 @@ import "./Map.css";
 import mapboxgl from "mapbox-gl";
 import CountyDropdown from "./CountyDropdown";
 import config from "../config";
-import * as turf from "@turf/turf";
 const MapboxDraw = require("@mapbox/mapbox-gl-draw");
 const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
 
-// console.log(intersection);
-
 export default class Map extends Component {
+  state = {
+    error: null,
+  };
+
   componentDidMount() {
     mapboxgl.accessToken = config.MAPBOX_API_TOKEN;
     const map = new mapboxgl.Map({
@@ -18,13 +19,36 @@ export default class Map extends Component {
       center: [-81.276855, 33.596319],
       zoom: 7,
     });
+
+    const fetchIntersect = (datapoints, type) => {
+      fetch("http://localhost:8000/draw", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          coords: datapoints,
+          geomtype: type,
+        }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => this.setState({ error }));
+    };
     // console.log(map)
     const address = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
     }).on("result", function ({ result }) {
       console.log(result.geometry.coordinates);
-      this.fetchIntersect(result.geometry.coordinates, 'point')
+      fetchIntersect(result.geometry.coordinates, "point");
     });
     map.addControl(address);
 
@@ -37,12 +61,11 @@ export default class Map extends Component {
     });
     map.addControl(draw);
 
-    
     const updateArea = (e) => {
       const data = draw.getAll();
       // console.log(data);
-      this.fetchIntersect(data.features[0].geometry.coordinates[0], 'draw');
-    }
+      fetchIntersect(data.features[0].geometry.coordinates[0], "draw");
+    };
 
     map.on("draw.create", updateArea);
     map.on("draw.delete", updateArea);
@@ -94,27 +117,28 @@ export default class Map extends Component {
     });
   }
 
-  fetchIntersect = (datapoints, type) => {
-    fetch("http://localhost:8000/draw", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        coords: datapoints,
-      geomtype: type}),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.status);
-        }
-        return res.json();
-      })
-      .then(data => {
-        console.log(data)
-      })
-      .catch((error) => this.setState({ error }));
-  };
+  // fetchIntersect = (datapoints, type) => {
+  //   fetch("http://localhost:8000/draw", {
+  //     method: "POST",
+  //     headers: {
+  //       "content-type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       coords: datapoints,
+  //       geomtype: type,
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) {
+  //         throw new Error(res.status);
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //     })
+  //     .catch((error) => this.setState({ error }));
+  // };
 
   render() {
     return (
