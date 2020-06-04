@@ -11,11 +11,11 @@ const Map = ReactMapboxGl({
 
 export default function Testmap() {
     const onDrawCreate = ({ features }) => {
-        console.log(features);
+        // console.log(features);
       };
     
       const onDrawUpdate = ({ features }) => {
-        console.log(features);
+        // console.log(features);
       };
     return (
         <div>

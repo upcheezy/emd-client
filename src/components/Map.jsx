@@ -1,39 +1,13 @@
 import React, { Component } from "react";
 import "./Map.css";
 import mapboxgl from "mapbox-gl";
-// import ReactMapboxGl from "react-mapbox-gl";
-// import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
-// import ReactMapGL from 'react-map-gl';
+import CountyDropdown from "./CountyDropdown";
 import config from "../config";
-import * as turf from '@turf/turf';
+import * as turf from "@turf/turf";
 const MapboxDraw = require("@mapbox/mapbox-gl-draw");
 const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
 
-
-const coords = "-83.2922310761724 34.6804605315986,-83.2897522288653 34.5903530258363,-83.3987056853352 34.5882589805737,-83.4013022139495 34.6783594756033,-83.2922310761724 34.6804605315986";
-
-var poly1 = turf.polygon([[
-  [-122.801742, 45.48565],
-  [-122.801742, 45.60491],
-  [-122.584762, 45.60491],
-  [-122.584762, 45.48565],
-  [-122.801742, 45.48565]
-]]);
-
-var poly2 = turf.polygon([[
-  [-122.520217, 45.535693],
-  [-122.64038, 45.553967],
-  [-122.720031, 45.526554],
-  [-122.669906, 45.507309],
-  [-122.723464, 45.446643],
-  [-122.532577, 45.408574],
-  [-122.487258, 45.477466],
-  [-122.520217, 45.535693]
-]]);
-
-var intersection = turf.intersect(poly1, poly2);
-
-console.log(intersection)
+// console.log(intersection);
 
 export default class Map extends Component {
   componentDidMount() {
@@ -50,6 +24,7 @@ export default class Map extends Component {
       mapboxgl: mapboxgl,
     }).on("result", function ({ result }) {
       console.log(result.geometry.coordinates);
+      this.fetchIntersect(result.geometry.coordinates, 'point')
     });
     map.addControl(address);
 
@@ -62,15 +37,15 @@ export default class Map extends Component {
     });
     map.addControl(draw);
 
+    
+    const updateArea = (e) => {
+      const data = draw.getAll();
+      // console.log(data);
+      this.fetchIntersect(data.features[0].geometry.coordinates[0], 'draw');
+    }
+
     map.on("draw.create", updateArea);
     map.on("draw.delete", updateArea);
-
-    // this logs the geometry of the polygon
-    // todo: need to retern this geom and feed to POST
-    function updateArea(e) {
-      const data = draw.getAll();
-      console.log(data);
-    }
 
     map.on("load", function () {
       map.addSource("maine", {
@@ -119,7 +94,34 @@ export default class Map extends Component {
     });
   }
 
+  fetchIntersect = (datapoints, type) => {
+    fetch("http://localhost:8000/draw", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        coords: datapoints,
+      geomtype: type}),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.status);
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log(data)
+      })
+      .catch((error) => this.setState({ error }));
+  };
+
   render() {
-    return <div id="map"></div>;
+    return (
+      <div className="container">
+        <div id="map"></div>
+        <CountyDropdown />
+      </div>
+    );
   }
 }
