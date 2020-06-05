@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./CountyDropdown.css";
 
 export default class CountyDropdown extends Component {
   state = {

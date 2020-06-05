@@ -1,4 +1,5 @@
 .county-dropdown {
     z-index: 4;
+    float: right;
     background-color: white;
 }

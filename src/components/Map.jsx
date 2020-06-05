@@ -13,7 +13,7 @@ export default class Map extends Component {
 
   componentDidMount() {
     mapboxgl.accessToken = config.MAPBOX_API_TOKEN;
-    const map = new mapboxgl.Map({
+    window.map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
       center: [-81.276855, 33.596319],
@@ -50,7 +50,7 @@ export default class Map extends Component {
       console.log(result.geometry.coordinates);
       fetchIntersect(result.geometry.coordinates, "point");
     });
-    map.addControl(address);
+    window.map.addControl(address);
 
     const draw = new MapboxDraw({
       displayControlsDefault: false,
@@ -59,7 +59,7 @@ export default class Map extends Component {
         trash: true,
       },
     });
-    map.addControl(draw);
+    window.map.addControl(draw);
 
     const updateArea = (e) => {
       const data = draw.getAll();
@@ -67,63 +67,67 @@ export default class Map extends Component {
       fetchIntersect(data.features[0].geometry.coordinates[0], "draw");
     };
 
-    const layerSwitcher = (e) => {
-      let layerId = e.target.id;
-      map.setStyle('mapbox://styles/mapbox/' + layerId)
-      console.log(e.target.id)
-    }
-
-    map.on("draw.create", updateArea);
-    map.on("draw.delete", updateArea);
+    window.map.on("draw.create", updateArea);
+    window.map.on("draw.delete", updateArea);
   }
 
-  funcCheker(name) {
-    console.log(name)
+  countyChecker(name) {
+    console.log(name);
     fetch("http://localhost:8000/countyselect", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          countyname: name,
-        }),
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        countyname: name,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.status);
+        }
+        return res.json();
       })
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error(res.status);
-          }
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((error) => this.setState({ error }));
+      .then((data) => {
+        console.log(data.rows.map(org => org.orgname));
+      })
+      .catch((error) => this.setState({ error }));
+  }
+
+  layerSwitcher(e) {
+    let layerId = e.target.id;
+    window.map.setStyle("mapbox://styles/mapbox/" + layerId);
   }
 
   render() {
     return (
       <div className="container">
         <div id="map"></div>
-        <div className='layerMenu'>
-          <input 
-            type="radio"
-            id="streets-v11"
-            value="streets"
-            checked="checked"
-            name="rtoggle"
-            onClick={(e) => this.layerSwitcher(e)}
-          />
-          <label htmlFor="streets-v11">Streets</label>
-          <input
-            type="radio"
-            id="satellite-v9"
-            name="rtoggle"
-            value="satellite"
-            onClick={(e) => this.layerSwitcher(e)}
-          />
-          <label htmlFor="satellite-v9">Satellite</label>
+        <div className="flex-container">
+          <div className="layerMenu">
+            <input
+              type="radio"
+              id="streets-v11"
+              value="streets"
+              checked="checked"
+              name="rtoggle"
+              onClick={(e) => this.layerSwitcher(e)}
+            />
+            <label htmlFor="streets-v11">Streets</label>
+            <input
+              type="radio"
+              id="satellite-streets-v10"
+              name="rtoggle"
+              value="satellite"
+              onClick={(e) => this.layerSwitcher(e)}
+            />
+            <label htmlFor="satellite-streets-v10">Satellite</label>
+          </div>
+          <CountyDropdown onAction={this.countyChecker} />
         </div>
-        <CountyDropdown onAction={this.funcCheker} />
+        <div className="sideNav">
+          <h1>Affected Members</h1>
+        </div>
       </div>
     );
   }
