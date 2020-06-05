@@ -31,14 +31,20 @@ export default class CountyDropdown extends Component {
             .catch(error => this.setState({error}));
     }
 
+    handleDropdownChange = (e) => {
+        this.setState({value: e.target.value})
+        console.log(this.state.value)
+    }
+
     render() {
-        console.log(this.props)
+        // console.log(this.props)
         return (
-            <form className='county-dropdown' onChange={this.props.onAction} >
+            <form className='county-dropdown' >
                 <label htmlFor="County Search"></label>
                 <select 
                     name="county search" 
                     id="county search"
+                    onChange={this.handleDropdownChange}
                 >
                     <option value="County Select" selected disabled hidden>County Select</option>
                     {this.state.counties.map(county => {
