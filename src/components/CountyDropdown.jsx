@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 export default class CountyDropdown extends Component {
     state = {
         counties: [],
+        value: '',
         error: null
     }
 
@@ -31,9 +32,9 @@ export default class CountyDropdown extends Component {
     }
 
     render() {
-        // console.log(this.state)
+        console.log(this.props)
         return (
-            <form className='county-dropdown'>
+            <form className='county-dropdown' onChange={this.props.onAction} >
                 <label htmlFor="County Search"></label>
                 <select 
                     name="county search" 
@@ -41,7 +42,6 @@ export default class CountyDropdown extends Component {
                 >
                     <option value="County Select" selected disabled hidden>County Select</option>
                     {this.state.counties.map(county => {
-                        // console.log(county.countyname)
                         return (
                             <>
                                 <option value="{county.countyname}">{county.countyname}</option>

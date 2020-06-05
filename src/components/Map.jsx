@@ -20,6 +20,28 @@ export default class Map extends Component {
       zoom: 7,
     });
 
+    const fetchCountyname = (name) => {
+      fetch("http://localhost:8000/countyselect", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          countyname: name,
+        }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => this.setState({ error }));
+    };
+
     const fetchIntersect = (datapoints, type) => {
       fetch("http://localhost:8000/draw", {
         method: "POST",
@@ -117,34 +139,34 @@ export default class Map extends Component {
     });
   }
 
-  // fetchIntersect = (datapoints, type) => {
-  //   fetch("http://localhost:8000/draw", {
-  //     method: "POST",
-  //     headers: {
-  //       "content-type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       coords: datapoints,
-  //       geomtype: type,
-  //     }),
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) {
-  //         throw new Error(res.status);
-  //       }
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       console.log(data);
-  //     })
-  //     .catch((error) => this.setState({ error }));
-  // };
+  funcCheker(name) {
+    console.log(name)
+    // fetch("http://localhost:8000/countyselect", {
+    //     method: "POST",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       countyname: name,
+    //     }),
+    //   })
+    //     .then((res) => {
+    //       if (!res.ok) {
+    //         throw new Error(res.status);
+    //       }
+    //       return res.json();
+    //     })
+    //     .then((data) => {
+    //       console.log(data);
+    //     })
+    //     .catch((error) => this.setState({ error }));
+  }
 
   render() {
     return (
       <div className="container">
         <div id="map"></div>
-        <CountyDropdown />
+        <CountyDropdown onAction={this.funcCheker} />
       </div>
     );
   }
