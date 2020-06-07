@@ -9,6 +9,7 @@ const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
 export default class Map extends Component {
   state = {
     error: null,
+    members: []
   };
 
   componentDidMount() {
@@ -89,7 +90,9 @@ export default class Map extends Component {
         return res.json();
       })
       .then((data) => {
-        console.log(data.rows.map(org => org.orgname));
+        console.log(Object.values(data.rows));
+        // console.log(typeof data.values)
+        this.setState({members: Object.values(data.rows)})
       })
       .catch((error) => this.setState({ error }));
   }
@@ -100,6 +103,7 @@ export default class Map extends Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <div className="container">
         <div id="map"></div>
