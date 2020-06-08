@@ -7,6 +7,18 @@ class Login extends Component {
     error: null,
   };
 
+  changeHandler = (ev) => {
+    this.setState({
+      [ev.target.name]: ev.target.value
+    })
+  }
+
+  handleSubmit = (ev) => {
+    ev.preventDefault()
+
+    this.props.onLogin(this.state)
+  }
+
   render() {
     const { error } = this.state;
     return (
@@ -18,12 +30,12 @@ class Login extends Component {
               {error && <p>{error.message}</p>}
             </div>
             <div className="uname">
-              {/* <label htmlFor="username">Username </label> */}
-              <input type="text" name="username" id="username" placeholder='username' required />
+              <label htmlFor="username"></label>
+              <input type="text" name="username" id="username" placeholder='username' required onChange={this.changeHandler} />
             </div>
             <div className="pw">
-              {/* <label htmlFor="password">Password </label> */}
-              <input type="password" name="password" id="password" placeholder='password' required />
+              <label htmlFor="password"></label>
+              <input type="password" name="password" id="password" placeholder='password' required onChange={this.changeHandler} />
             </div>
             <button type="submit">Login</button>
           </form>

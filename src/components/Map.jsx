@@ -40,6 +40,7 @@ export default class Map extends Component {
         })
         .then((data) => {
           console.log(data);
+          this.setState({members: Object.values(data.rows)})
         })
         .catch((error) => this.setState({ error }));
     };
@@ -127,10 +128,28 @@ export default class Map extends Component {
             />
             <label htmlFor="satellite-streets-v10">Satellite</label>
           </div>
-          <CountyDropdown onAction={this.countyChecker} />
+          <CountyDropdown onAction={this.countyChecker.bind(this)} />
         </div>
         <div className="sideNav">
           <h1>Affected Members</h1>
+          <section className='member_list'>
+            <ul>
+              {this.state.members.map(x => 
+                // give li class to style
+                <li className='member_li'>
+                  <span style={{fontWeight: 'bold'}}> Code: </span> 
+                    {x.code} {' '}
+                   <span style={{fontWeight: 'bold'}}>Org: </span> 
+                    {x.orgname} {' '}
+                    <span style={{fontWeight: 'bold'}}>Person: </span> 
+                    {x.personname} {' '}
+                    <span style={{fontWeight: 'bold'}}>Email: </span> 
+                    {x.emailaddress} {' '}
+                </li>
+              )}
+              {'\n'}
+            </ul>
+          </section>
         </div>
       </div>
     );

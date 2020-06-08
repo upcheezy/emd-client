@@ -27,6 +27,16 @@
     margin-top: 8px;
 }
 
+ul {
+    list-style-type: none;
+    margin-right: 30px;
+    margin-bottom: 10px;
+}
+
+.member_li {
+    border: black solid 1px;
+}
+
 .calculation-box {
     height: 75px;
     width: 150px;
