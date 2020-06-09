@@ -11,7 +11,7 @@ export default class Map extends Component {
   state = {
     error: null,
     members: [],
-    grid: {},
+    grid: [],
   };
 
   componentDidMount() {
@@ -39,8 +39,9 @@ export default class Map extends Component {
           return res.json();
         })
         .then((data) => {
-          this.setState({ grid: Parse(data.rows[0].geom) });
-          console.log(this.state.grid.coordinates[0][0]);
+          let gridParse = Parse(data.rows[0].geom);
+          this.setState({ grid: gridParse.coordinates[0][0] });
+          console.log(gridParse.coordinates[0][0]);
           // let geojson = Parse(data.rows[0].geom);
           // window.map.on("load", function () {
           //   window.map.addSource("grid", {
@@ -111,16 +112,18 @@ export default class Map extends Component {
       fetchIntersect(data.features[0].geometry.coordinates[0], "draw");
     };
 
+    // let gCoords = this.state;
     window.map.on("draw.create", updateArea);
     window.map.on("draw.delete", updateArea);
-    window.map.on("load", function () {
+    window.map.on("load", () => {
+      console.log('a dataloading event has occured')
       window.map.addSource("maine", {
         type: "geojson",
         data: {
           type: "Feature",
           geometry: {
-            type: "Polygon",
-            coordinates: this.state.grid.coordinates[0][0]
+            type: "MultiPolygon",
+            coordinates: this.state.grid ? this.state.grid : null,
           },
         },
       });
@@ -168,7 +171,7 @@ export default class Map extends Component {
   }
 
   render() {
-    // console.log(this.state)
+    console.log(this.state.grid)
     return (
       <div className="container">
         <div id="map"></div>
