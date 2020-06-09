@@ -7,12 +7,16 @@ with county_select as (
 	from grid g, county_select cs
 	where st_intersects(g.geom, cs.geom)
 ), sa_select as (
-	select s.dccode
+	select s.dccode, gs.id
 	from sa_subdivide s
 	join grid_select gs on st_intersects (s.geom, gs.geom)
-	group by s.dccode
+	group by s.dccode, gs.id
+), sa_group as (
+	select dccode, array_agg(id order by id) as id_array
+	from sa_select
+	group by dccode
 )
-select md.*
+select md.*, id_array
 from member_data md
-join sa_select s on md.code = s.dccode
+join sa_group s on md.code = s.dccode
 where md.contacttype = 'Member Contact';

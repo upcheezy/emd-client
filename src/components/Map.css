@@ -57,4 +57,5 @@ ul {
     width: 25%;
     height: 100%;
     left: 0;
+    overflow: scroll;
 }

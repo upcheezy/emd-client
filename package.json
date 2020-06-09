@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.1.2",
+    "@mapbox/mapbox-gl-geocoder": "^4.5.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -18,8 +20,7 @@
     "react-mapbox-gl-draw": "^1.0.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "@mapbox/mapbox-gl-draw": "^y1.1.2",
-    "@mapbox/mapbox-gl-geocoder": "^4.5.1"
+    "wellknown": "^0.5.0"
   },
   "resolutions": {
     "@turf/difference": "6.0.1"

@@ -5,11 +5,13 @@ import CountyDropdown from "./CountyDropdown";
 import config from "../config";
 const MapboxDraw = require("@mapbox/mapbox-gl-draw");
 const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
+const Parse = require("wellknown");
 
 export default class Map extends Component {
   state = {
     error: null,
-    members: []
+    members: [],
+    grid: {},
   };
 
   componentDidMount() {
@@ -20,9 +22,46 @@ export default class Map extends Component {
       center: [-81.276855, 33.596319],
       zoom: 7,
     });
+    // call fetchgrid and get the grid id and the geom
+    // then convert the geom into geojson and save it as a variable to pass
+    // to map.fitbounds
+    const fetchGrid = () => {
+      fetch("http://gis17-01:8000/grid", {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          this.setState({ grid: Parse(data.rows[0].geom) });
+          console.log(this.state.grid.coordinates[0][0]);
+          // let geojson = Parse(data.rows[0].geom);
+          // window.map.on("load", function () {
+          //   window.map.addSource("grid", {
+          //     type: "geojson",
+          //     data: geojson,
+          //   });
+          //   window.map.addLayer({
+          //     id: "grid",
+          //     type: "fill",
+          //     source: "grid",
+          //     paint: {
+          //       "fill-color": "#BF93E4",
+          //     },
+          //   });
+          // });
+        })
+        .catch((error) => this.setState({ error }));
+    };
 
     const fetchIntersect = (datapoints, type) => {
-      fetch("http://localhost:8000/draw", {
+      fetch("http://gis17-01:8000/draw", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -40,7 +79,9 @@ export default class Map extends Component {
         })
         .then((data) => {
           console.log(data);
-          this.setState({members: Object.values(data.rows)})
+          this.setState({
+            members: Object.values(data.rows),
+          });
         })
         .catch((error) => this.setState({ error }));
     };
@@ -51,6 +92,7 @@ export default class Map extends Component {
     }).on("result", function ({ result }) {
       console.log(result.geometry.coordinates);
       fetchIntersect(result.geometry.coordinates, "point");
+      fetchGrid();
     });
     window.map.addControl(address);
 
@@ -71,11 +113,33 @@ export default class Map extends Component {
 
     window.map.on("draw.create", updateArea);
     window.map.on("draw.delete", updateArea);
+    window.map.on("load", function () {
+      window.map.addSource("maine", {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: this.state.grid.coordinates[0][0]
+          },
+        },
+      });
+      window.map.addLayer({
+        id: "maine",
+        type: "fill",
+        source: "maine",
+        layout: {},
+        paint: {
+          "fill-color": "#088",
+          "fill-opacity": 0.8,
+        },
+      });
+    });
   }
 
   countyChecker(name) {
-    console.log(name);
-    fetch("http://localhost:8000/countyselect", {
+    // console.log(name);
+    fetch("http://gis17-01:8000/countyselect", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -93,7 +157,7 @@ export default class Map extends Component {
       .then((data) => {
         console.log(Object.values(data.rows));
         // console.log(typeof data.values)
-        this.setState({members: Object.values(data.rows)})
+        this.setState({ members: Object.values(data.rows) });
       })
       .catch((error) => this.setState({ error }));
   }
@@ -104,7 +168,7 @@ export default class Map extends Component {
   }
 
   render() {
-    console.log(this.state)
+    // console.log(this.state)
     return (
       <div className="container">
         <div id="map"></div>
@@ -132,22 +196,21 @@ export default class Map extends Component {
         </div>
         <div className="sideNav">
           <h1>Affected Members</h1>
-          <section className='member_list'>
+          <section className="member_list">
             <ul>
-              {this.state.members.map(x => 
+              {this.state.members.map((x) => (
                 // give li class to style
-                <li className='member_li'>
-                  <span style={{fontWeight: 'bold'}}> Code: </span> 
-                    {x.code} {' '}
-                   <span style={{fontWeight: 'bold'}}>Org: </span> 
-                    {x.orgname} {' '}
-                    <span style={{fontWeight: 'bold'}}>Person: </span> 
-                    {x.personname} {' '}
-                    <span style={{fontWeight: 'bold'}}>Email: </span> 
-                    {x.emailaddress} {' '}
+                <li className="member_li">
+                  <span style={{ fontWeight: "bold" }}> Code: </span>
+                  {x.code} <span style={{ fontWeight: "bold" }}>Org: </span>
+                  {x.orgname}{" "}
+                  <span style={{ fontWeight: "bold" }}>Person: </span>
+                  {x.personname}{" "}
+                  <span style={{ fontWeight: "bold" }}>Email: </span>
+                  {x.emailaddress}{" "}
                 </li>
-              )}
-              {'\n'}
+              ))}
+              {"\n"}
             </ul>
           </section>
         </div>

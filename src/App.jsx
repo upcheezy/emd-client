@@ -10,7 +10,7 @@ class App extends Component {
 
   Login = (loginData) => {
     console.log(loginData);
-    fetch("http://localhost:8000/login", {
+    fetch("http://gis17-01:8000/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -33,7 +33,7 @@ class App extends Component {
   }
 
   Signup = (SignupData) => {
-    fetch("http://localhost:8000/signup", {
+    fetch("http://gis17-01:8000/signup", {
       method: "POST",
       headers: {
         "content-type": "application/json",
