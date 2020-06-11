@@ -39,28 +39,47 @@ export default class Map extends Component {
           return res.json();
         })
         .then((data) => {
-          let gridParse = Parse(data.rows[0].geom);
-          this.setState({ grid: gridParse.coordinates[0][0] });
-          console.log(gridParse.coordinates[0][0]);
-          // let geojson = Parse(data.rows[0].geom);
-          // window.map.on("load", function () {
-          //   window.map.addSource("grid", {
-          //     type: "geojson",
-          //     data: geojson,
-          //   });
-          //   window.map.addLayer({
-          //     id: "grid",
-          //     type: "fill",
-          //     source: "grid",
-          //     paint: {
-          //       "fill-color": "#BF93E4",
-          //     },
-          //   });
-          // });
+          let gridRowId = window.localStorage.getItem('id').split(',')
+          // console.log(data.rows)
+          // console.log(gridRowId)
+          let matching = [];
+          gridRowId.map((element) => {
+            const idContains = data.rows.find(id_element => id_element.id === parseInt(element))
+            if (typeof idContains !== 'undefined') matching.push(idContains)
+          })
+          // console.log(matching)
+          const gridGeom = matching.map(g => Parse(g.geom))
+          // console.log(gridGeom)
+          // let gridParse = Parse(matching[0].geom);
+          const gridCoords = gridGeom.map(gg => gg.coordinates[0][0])
+          // console.log(gridCoords);
+          // if (window.map.getLayer('maine')) window.map.removeLayer('maine');
+          window.map.addSource("maine", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              geometry: {
+                type: "MultiPolygon",
+                coordinates: [gridCoords],
+              },
+            },
+          });
+          window.map.addLayer({
+            id: "maine",
+            type: "fill",
+            source: "maine",
+            layout: {},
+            paint: {
+              "fill-color": "#088",
+              "fill-opacity": 0.8,
+            },
+          });
+          
         })
         .catch((error) => this.setState({ error }));
     };
 
+    
     const fetchIntersect = (datapoints, type) => {
       fetch("http://gis17-01:8000/draw", {
         method: "POST",
@@ -80,18 +99,40 @@ export default class Map extends Component {
         })
         .then((data) => {
           console.log(data);
+          const gridIdz = {};
+          data.rows.forEach((row) => {
+            // console.log(row.id_array)
+            row.id_array.forEach((gid) => {
+              // console.log(gid)
+              if(!gridIdz[gid]){
+                console.log(gridIdz[gid])
+                gridIdz[gid] = 1
+              }
+            })
+          })
+          console.log(Object.keys(gridIdz))
+          // console.log(data);
           this.setState({
             members: Object.values(data.rows),
           });
+          window.localStorage.setItem('id', null)
+          if(window.localStorage.getItem('id')){
+            console.log('inside if')
+            window.localStorage.removeItem('id')
+          }
+          window.localStorage.setItem('id',Object.keys(gridIdz))
+          fetchGrid();
         })
         .catch((error) => this.setState({ error }));
     };
-    // console.log(map)
+    
     const address = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
+      countries: 'us',
+      bbox: [-83.726807,31.784217,-78.013916,35.415915]
     }).on("result", function ({ result }) {
-      console.log(result.geometry.coordinates);
+      // console.log(result.geometry.coordinates);
       fetchIntersect(result.geometry.coordinates, "point");
       fetchGrid();
     });
@@ -107,37 +148,24 @@ export default class Map extends Component {
     window.map.addControl(draw);
 
     const updateArea = (e) => {
+      // let dataId
+      // if (draw.getAll().features.length > 1) draw.deleteAll()
       const data = draw.getAll();
-      // console.log(data);
-      fetchIntersect(data.features[0].geometry.coordinates[0], "draw");
+      // dataId = draw.getAll().features[0].id
+      // console.log(dataId)
+
+      console.log(data, data.features);
+      if (data.features.length > 0) {
+        fetchIntersect(data.features[0].geometry.coordinates[0], "draw");
+      }
+      
+      
     };
 
     // let gCoords = this.state;
     window.map.on("draw.create", updateArea);
     window.map.on("draw.delete", updateArea);
-    window.map.on("load", () => {
-      console.log('a dataloading event has occured')
-      window.map.addSource("maine", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "MultiPolygon",
-            coordinates: this.state.grid ? this.state.grid : null,
-          },
-        },
-      });
-      window.map.addLayer({
-        id: "maine",
-        type: "fill",
-        source: "maine",
-        layout: {},
-        paint: {
-          "fill-color": "#088",
-          "fill-opacity": 0.8,
-        },
-      });
-    });
+    window.map.on('draw.update', updateArea);
   }
 
   countyChecker(name) {
@@ -160,7 +188,26 @@ export default class Map extends Component {
       .then((data) => {
         console.log(Object.values(data.rows));
         // console.log(typeof data.values)
+        const gridIdz = {};
+          data.rows.forEach((row) => {
+            // console.log(row.id_array)
+            row.id_array.forEach((gid) => {
+              // console.log(gid)
+              if(!gridIdz[gid]){
+                console.log(gridIdz[gid])
+                gridIdz[gid] = 1
+              }
+            })
+          })
+          console.log(Object.keys(gridIdz))
         this.setState({ members: Object.values(data.rows) });
+        window.localStorage.setItem('id', null)
+        if(window.localStorage.getItem('id')){
+          console.log('inside if')
+          window.localStorage.removeItem('id')
+        }
+        window.localStorage.setItem('id',Object.keys(gridIdz))
+        // fetchGrid();
       })
       .catch((error) => this.setState({ error }));
   }
@@ -171,7 +218,7 @@ export default class Map extends Component {
   }
 
   render() {
-    console.log(this.state.grid)
+    // console.log(this.state.grid);
     return (
       <div className="container">
         <div id="map"></div>
