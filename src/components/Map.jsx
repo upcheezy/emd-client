@@ -40,11 +40,6 @@ export default class Map extends Component {
           if (typeof idContains !== "undefined") matching.push(idContains);
         });
         console.log(matching)
-        const gridGeom = matching.map((g) => Parse(g.geom));
-        console.log(gridGeom)
-        // let gridParse = Parse(matching[0].geom);
-        const gridCoords = gridGeom.map((gg) => gg.coordinates[0][0]);
-        console.log(gridCoords);
         let gj = {
           "type": "FeatureCollection",
           "features": []
@@ -63,28 +58,33 @@ export default class Map extends Component {
             }
           )
         })
-        // if (window.map.getLayer('maine')) window.map.removeLayer('maine');
-        window.map.addSource("maine", {
-          type: "geojson",
-          data: gj,
-        });
-        window.map.addLayer({
-          id: "maine",
-          type: "fill",
-          source: "maine",
-          layout: {
-            // "text-field": ['get', 'id'],
-            // "text_font": [
-            //   "DIN Offc Pro Medium",
-            //   "Arial Unicode MS Bold"
-            // ],
-            // "text-size": 12
-          },
-          paint: {
-            "fill-color": "#088",
-            "fill-opacity": 0.8,
-          },
-        });
+        if (window.map.getLayer('maine')) {
+          window.map.getSource('maine').setData(gj);
+          console.log('inside getsource')
+        } else {
+          window.map.addSource("maine", {
+            type: "geojson",
+            data: gj,
+          });
+          console.log(gj)
+          window.map.addLayer({
+            id: "maine",
+            type: "fill",
+            source: "maine",
+            layout: {
+              // "text-field": ['get', 'id'],
+              // "text_font": [
+              //   "DIN Offc Pro Medium",
+              //   "Arial Unicode MS Bold"
+              // ],
+              // "text-size": 12
+            },
+            paint: {
+              "fill-color": "#088",
+              "fill-opacity": 0.8,
+            },
+          });
+        }
       })
       .catch((error) => this.setState({ error }));
   }
@@ -97,9 +97,6 @@ export default class Map extends Component {
       center: [-81.276855, 33.596319],
       zoom: 7,
     });
-    // call fetchgrid and get the grid id and the geom
-    // then convert the geom into geojson and save it as a variable to pass
-    // to map.fitbounds
 
     const fetchIntersect = (datapoints, type) => {
       fetch("http://gis17-01:8000/draw", {
@@ -185,8 +182,8 @@ export default class Map extends Component {
       console.log(ev.features[0].id);
       draw.delete(this.state.drawCoords);
       this.setState({ drawCoords: ev.features[0].id });
-      let coordinates = ev.features[0].geometry.coordinates;
-      console.log([coordinates[0][0], coordinates[0][2]])
+      // let coordinates = ev.features[0].geometry.coordinates;
+      // console.log([coordinates[0][0], coordinates[0][2]])
       fetchIntersect(ev.features[0].geometry.coordinates[0], "draw");
     });
     window.map.on("draw.delete", () => {
@@ -249,6 +246,7 @@ export default class Map extends Component {
     return (
       <div className="container">
         <div id="map"></div>
+        <div id='geocoder'></div>
         <div className="flex-container">
           <div className="layerMenu">
             <input
@@ -272,7 +270,7 @@ export default class Map extends Component {
           <CountyDropdown onAction={this.countyChecker.bind(this)} />
         </div>
         <div className="sideNav">
-          <h1>Affected Members</h1>
+          {/* <h1>Affected Members</h1> */}
           <section className="member_list">
             <ul>
               {console.log(this.state.members)}
