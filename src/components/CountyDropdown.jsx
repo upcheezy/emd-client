@@ -52,7 +52,7 @@ export default class CountyDropdown extends Component {
         <label htmlFor="County Search"></label>
         <select
           name="county search"
-          id="county search"
+          id="countysearch"
           onChange={this.handleDropdownChange}
         >
           <option value="County Select" selected disabled hidden>County Select</option>

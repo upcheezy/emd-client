@@ -3,6 +3,9 @@ import "./Map.css";
 import mapboxgl from "mapbox-gl";
 import CountyDropdown from "./CountyDropdown";
 import config from "../config";
+import sat from "../images/satellite.PNG";
+import st from "../images/street.PNG";
+import * as turf from "@turf/turf";
 const MapboxDraw = require("@mapbox/mapbox-gl-draw");
 const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
 const Parse = require("wellknown");
@@ -13,6 +16,8 @@ export default class Map extends Component {
     members: [],
     grid: [],
     drawCoords: "",
+    layerId: "satellite-streets-v10",
+    src: sat,
   };
 
   fetchGrid() {
@@ -39,52 +44,79 @@ export default class Map extends Component {
           );
           if (typeof idContains !== "undefined") matching.push(idContains);
         });
-        console.log(matching)
+        console.log(matching);
         let gj = {
+          type: "FeatureCollection",
+          features: [],
+        };
+        matching.forEach((element) => {
+          gj.features.push({
+            type: "Feature",
+            properties: {
+              id: element.id.toString(),
+            },
+            geometry: {
+              type: "Polygon",
+              coordinates: [Parse(element.geom).coordinates[0][0]],
+            },
+          });
+        });
+        console.log(gj);
+        let gjC = {
           "type": "FeatureCollection",
           "features": []
-        }
-        matching.forEach((element) => {
-          gj.features.push(
-            {
-              "type": "Feature",
-              "properties": {
-                "id": element.id
-              },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates":[Parse(element.geom).coordinates[0][0]]
-              }
-            }
-          )
+        };
+        gj.features.forEach((element) => {
+          gjC.features.push({
+            "type": "Feature",
+            "properties": {
+              "id": element.properties.id
+            },
+            "geometry": turf.centroid(element).geometry
+          })
+          // console.log(turf.centroid(element).geometry)
         })
-        if (window.map.getLayer('maine')) {
-          window.map.getSource('maine').setData(gj);
-          console.log('inside getsource')
+        console.log(gjC)
+        let centroid = turf.centroid(gj);
+        console.log(centroid)
+        // console.log(gjC.features[0].geometry)
+        // Add the label point source
+        console.log(centroid);
+        if (window.map.getLayer("maine")) {
+          window.map.getSource("maine").setData(gj);
+          console.log("inside getsource");
         } else {
           window.map.addSource("maine", {
             type: "geojson",
             data: gj,
           });
-          console.log(gj)
+
           window.map.addLayer({
             id: "maine",
             type: "fill",
             source: "maine",
-            layout: {
-              // "text-field": ['get', 'id'],
-              // "text_font": [
-              //   "DIN Offc Pro Medium",
-              //   "Arial Unicode MS Bold"
-              // ],
-              // "text-size": 12
-            },
             paint: {
               "fill-color": "#088",
               "fill-opacity": 0.8,
             },
           });
         }
+        window.map.addSource("label", {
+          type: "geojson",
+          data: gjC,
+        });
+        // Add the label style
+        window.map.addLayer({
+          id: "label-style",
+          type: "symbol",
+          source: "label",
+          layout: {
+            "text-field": ['get','id'],
+          },
+          paint: {
+            "text-color": "red",
+          },
+        });
       })
       .catch((error) => this.setState({ error }));
   }
@@ -237,8 +269,16 @@ export default class Map extends Component {
   }
 
   layerSwitcher(e) {
-    let layerId = e.target.id;
-    window.map.setStyle("mapbox://styles/mapbox/" + layerId);
+    if (this.state.layerId === "satellite-streets-v10") {
+      window.map.setStyle("mapbox://styles/mapbox/satellite-streets-v10");
+      this.setState({ layerId: "streets-v11" });
+      this.setState({ src: st });
+    }
+    if (this.state.layerId === "streets-v11") {
+      window.map.setStyle(`mapbox://styles/mapbox/streets-v11`);
+      this.setState({ layerId: "satellite-streets-v10" });
+      this.setState({ src: sat });
+    }
   }
 
   render() {
@@ -246,29 +286,20 @@ export default class Map extends Component {
     return (
       <div className="container">
         <div id="map"></div>
-        <div id='geocoder'></div>
-        <div className="flex-container">
-          <div className="layerMenu">
-            <input
-              type="radio"
-              id="streets-v11"
-              value="streets"
-              checked="checked"
-              name="rtoggle"
-              onClick={(e) => this.layerSwitcher(e)}
-            />
-            <label htmlFor="streets-v11">Streets</label>
-            <input
-              type="radio"
-              id="satellite-streets-v10"
-              name="rtoggle"
-              value="satellite"
-              onClick={(e) => this.layerSwitcher(e)}
-            />
-            <label htmlFor="satellite-streets-v10">Satellite</label>
-          </div>
-          <CountyDropdown onAction={this.countyChecker.bind(this)} />
+        {/* <input type="text" 
+               onInput={(ev) => this.geocodeThis(ev)} 
+               id='search' 
+               placeholder='geocode here...' /> */}
+        <div className="layerMenu">
+          <img
+            src={this.state.src}
+            alt="satellite"
+            classname="sat"
+            id={this.state.layerId}
+            onClick={(e) => this.layerSwitcher(e)}
+          />
         </div>
+        <CountyDropdown onAction={this.countyChecker.bind(this)} />
         <div className="sideNav">
           {/* <h1>Affected Members</h1> */}
           <section className="member_list">
