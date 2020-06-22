@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import "./Map.css";
 import mapboxgl from "mapbox-gl";
 import CountyDropdown from "./CountyDropdown";
@@ -13,14 +14,19 @@ const Parse = require("wellknown");
 export default class Map extends Component {
   state = {
     error: null,
-    members: [],
+    members: {},
     grid: [],
     drawCoords: "",
     layerId: "satellite-streets-v10",
     src: sat,
+    bottomNav: "hidden",
+    map: "map",
+    img: "sat",
+    mbcntrl: "mapboxgl-ctrl-top-right .mapboxgl-ctrl",
   };
 
   fetchGrid() {
+    this.toggleBottomNav();
     fetch("http://gis17-01:8000/grid", {
       method: "GET",
       headers: {
@@ -62,28 +68,31 @@ export default class Map extends Component {
           });
         });
         console.log(gj);
+        let bounds = turf.bbox(gj);
+        window.map.fitBounds(bounds, { padding: 20 });
         let gjC = {
-          "type": "FeatureCollection",
-          "features": []
+          type: "FeatureCollection",
+          features: [],
         };
         gj.features.forEach((element) => {
           gjC.features.push({
-            "type": "Feature",
-            "properties": {
-              "id": element.properties.id
+            type: "Feature",
+            properties: {
+              id: element.properties.id,
             },
-            "geometry": turf.centroid(element).geometry
-          })
+            geometry: turf.centroid(element).geometry,
+          });
           // console.log(turf.centroid(element).geometry)
-        })
-        console.log(gjC)
+        });
+        console.log(gjC);
         let centroid = turf.centroid(gj);
-        console.log(centroid)
+        console.log(centroid);
         // console.log(gjC.features[0].geometry)
         // Add the label point source
         console.log(centroid);
         if (window.map.getLayer("maine")) {
           window.map.getSource("maine").setData(gj);
+          window.map.getSource("label").setData(gjC);
           console.log("inside getsource");
         } else {
           window.map.addSource("maine", {
@@ -100,23 +109,32 @@ export default class Map extends Component {
               "fill-opacity": 0.8,
             },
           });
+          window.map.addSource("label", {
+            type: "geojson",
+            data: gjC,
+          });
+          // Add the label style
+          window.map.addLayer({
+            id: "label-style",
+            type: "symbol",
+            source: "label",
+            layout: {
+              "text-field": ["get", "id"],
+            },
+            paint: {
+              "text-color": "red",
+            },
+          });
+          // let coordinates = gj.features[0].geometry.coordinates;
+          // console.log(coordinates);
+          // const bounds = coordinates.reduce(function (bounds, coord) {
+          //   return bounds.extend(coord);
+          // }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+          // window.map.fitBounds(bounds, {
+          //   padding: 20,
+          // });
         }
-        window.map.addSource("label", {
-          type: "geojson",
-          data: gjC,
-        });
-        // Add the label style
-        window.map.addLayer({
-          id: "label-style",
-          type: "symbol",
-          source: "label",
-          layout: {
-            "text-field": ['get','id'],
-          },
-          paint: {
-            "text-color": "red",
-          },
-        });
       })
       .catch((error) => this.setState({ error }));
   }
@@ -160,10 +178,39 @@ export default class Map extends Component {
               }
             });
           });
-          console.log(Object.keys(gridIdz));
-          // console.log(data);
+          console.log(data);
+
+          let obj = {};
+          data.rows.forEach((member) => {
+            member.id_array.forEach((id) => {
+              if (!obj[id]) {
+                obj[id] = {};
+              }
+            });
+          });
+
+          // console.log(obj);
+
+          Object.keys(obj).forEach((i) => {
+            data.rows.forEach((member) => {
+              if (member.id_array.includes(+i)) {
+                if (!obj[i][member.faciltype]) {
+                  obj[i][member.faciltype] = {
+                    orgname: {},
+                  };
+                }
+                let memObj = {
+                  name: member.personname,
+                  email: member.email,
+                  phone: member.number,
+                };
+
+                obj[i][member.faciltype]["orgname"][member.orgname] = memObj;
+              }
+            });
+          });
           this.setState({
-            members: Object.values(data.rows),
+            members: obj,
           });
           window.localStorage.setItem("id", null);
           if (window.localStorage.getItem("id")) {
@@ -211,11 +258,12 @@ export default class Map extends Component {
 
     // let gCoords = this.state;
     window.map.on("draw.create", (ev) => {
-      console.log(ev.features[0].id);
       draw.delete(this.state.drawCoords);
       this.setState({ drawCoords: ev.features[0].id });
       // let coordinates = ev.features[0].geometry.coordinates;
-      // console.log([coordinates[0][0], coordinates[0][2]])
+      console.log(ev.features[0].geometry.coordinates[0]);
+      // var bounds = ev.features[0].geometry.coordinates[0];
+      console.log(ev);
       fetchIntersect(ev.features[0].geometry.coordinates[0], "draw");
     });
     window.map.on("draw.delete", () => {
@@ -250,13 +298,44 @@ export default class Map extends Component {
           row.id_array.forEach((gid) => {
             // console.log(gid)
             if (!gridIdz[gid]) {
-              console.log(gridIdz[gid]);
               gridIdz[gid] = 1;
             }
           });
         });
         console.log(Object.keys(gridIdz));
-        this.setState({ members: Object.values(data.rows) });
+        let obj = {};
+          data.rows.forEach((member) => {
+            member.id_array.forEach((id) => {
+              if (!obj[id]) {
+                obj[id] = {};
+              }
+            });
+          });
+
+          // console.log(obj);
+
+          Object.keys(obj).forEach((i) => {
+            data.rows.forEach((member) => {
+              if (member.id_array.includes(+i)) {
+                if (!obj[i][member.faciltype]) {
+                  obj[i][member.faciltype] = {
+                    orgname: {},
+                  };
+                }
+                let memObj = {
+                  name: member.personname,
+                  email: member.email,
+                  phone: member.number,
+                };
+
+                obj[i][member.faciltype]["orgname"][member.orgname] = memObj;
+              }
+            });
+          });
+          this.setState({
+            members: obj,
+          });
+        // this.setState({ members: Object.values(data.rows) });
         window.localStorage.setItem("id", null);
         if (window.localStorage.getItem("id")) {
           console.log("inside if");
@@ -281,11 +360,64 @@ export default class Map extends Component {
     }
   }
 
+  toggleBottomNav() {
+    if (this.state.bottomNav === "hidden") {
+      this.setState({ bottomNav: "sideNav" });
+    }
+    if (this.state.map === "map") {
+      this.setState({ map: "short-map" });
+    }
+    if (this.state.img === "sat") {
+      this.setState({ img: "sat-short" });
+    }
+
+    const node = document.querySelector(".mapboxgl-ctrl-group");
+    // this is what we need to access the class and style .mapboxgl-ctrl-group.short
+    node.classList.add("short");
+    console.log(node);
+  }
+
   render() {
-    // console.log(this.state.grid);
+    let memberList = [];
+    for (let [key, value] of Object.entries(this.state.members)) {
+      let member = (
+        <div className="member-cont">
+          <p>Grid: {key}</p>
+          <hr />
+          {Object.entries(value).map((x) => {
+            return (
+              <>
+                <p>{x[0]}</p>
+                <ul>
+                  {Object.values(x[1]).map((x) => {
+                    for (let [k, v] of Object.entries(x)) {
+                      console.log(k, v);
+                      return (
+                        <>
+                          <li>{k}</li>
+                          <ul>
+                            {Object.entries(v).map((x) => (
+                              <li>
+                                {x[0]}: {x[1]}
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      );
+                    }
+                  })}
+                </ul>
+              </>
+            );
+          })}
+        </div>
+      );
+      // console.log(key, value);
+      memberList.push(member);
+    }
     return (
       <div className="container">
-        <div id="map"></div>
+        <div id={this.state.map}></div>
         {/* <input type="text" 
                onInput={(ev) => this.geocodeThis(ev)} 
                id='search' 
@@ -294,31 +426,31 @@ export default class Map extends Component {
           <img
             src={this.state.src}
             alt="satellite"
-            classname="sat"
+            className={this.state.img}
             id={this.state.layerId}
             onClick={(e) => this.layerSwitcher(e)}
           />
         </div>
         <CountyDropdown onAction={this.countyChecker.bind(this)} />
-        <div className="sideNav">
-          {/* <h1>Affected Members</h1> */}
+        {console.log(this.state.bottomNav)}
+        <div className={this.state.bottomNav}>
+          <h1>Affected Members</h1>
+          {console.log(this.state.members)}
+          {memberList.map((x) => x)}
           <section className="member_list">
-            <ul>
-              {console.log(this.state.members)}
-              {this.state.members.map((x) => (
+            {/* <ul>
+              {console.log(Object.entries(this.state.members))}
+              {Object.entries(this.state.members).map((x) => (
                 // give li class to style
                 <li className="member_li">
-                  <span style={{ fontWeight: "bold" }}> Code: </span>
-                  {x.code} <span style={{ fontWeight: "bold" }}>Org: </span>
-                  {x.orgname}{" "}
-                  <span style={{ fontWeight: "bold" }}>Person: </span>
-                  {x.personname}{" "}
-                  <span style={{ fontWeight: "bold" }}>Email: </span>
-                  {x.emailaddress}{" "}
+                  {x[0]}
+                     {Object.keys(x[1]).forEach((i) => {
+                       console.log()
+                     })}
                 </li>
               ))}
               {"\n"}
-            </ul>
+            </ul> */}
           </section>
         </div>
       </div>

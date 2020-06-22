@@ -3,12 +3,12 @@
     float: right;
     background-color: white;
     width: 175px;
-    height:50px;
+    height:47px;
     /* border: black solid 1px; */
     border-radius: 17px;
-    margin-top: 5px;
+    margin-top: 16px;
     border-color: lightgray;
-    margin-right: 5px;
+    margin-right: 12px;
 }
 
 #countysearch {
@@ -19,4 +19,5 @@
     color: grey;
     font-size: 17px;
     border-color: lightgray;
+    padding-top: 1px;
 }

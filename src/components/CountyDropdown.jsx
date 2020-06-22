@@ -33,7 +33,7 @@ export default class CountyDropdown extends Component {
   }
 
   handleDropdownChange = (e) => {
-    // console.log(e.target.value)
+    console.log(e.target.value)
     this.setState(
       {
         value: e.target.value,
