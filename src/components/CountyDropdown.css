@@ -8,7 +8,7 @@
     border-radius: 17px;
     margin-top: 16px;
     border-color: lightgray;
-    margin-right: 12px;
+    
 }
 
 #countysearch {
@@ -20,4 +20,11 @@
     font-size: 17px;
     border-color: lightgray;
     padding-top: 1px;
+}
+
+@media screen and (min-width: 600px) {
+    .county-dropdown {
+        width: 230px;
+        margin-right: 15px;
+    }
 }

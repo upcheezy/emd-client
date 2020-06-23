@@ -385,19 +385,28 @@ export default class Map extends Component {
           <p>Grid: {key}</p>
           <hr />
           {Object.entries(value).map((x) => {
+            // console.log(x)
             return (
               <>
-                <p>{x[0]}</p>
-                <ul>
+                <p className="facil-type">{x[0]}</p>
+                <ul className="member-card">
+                  {console.log(Object.values(x[1]))}
                   {Object.values(x[1]).map((x) => {
+                    if (Object.entries(x).length === 2) {
+                      // console.log(Object.values(x));
+                      // console.log(Object.entries(x)[1]);
+                    }
+                    console.log(Object.entries(x));
                     for (let [k, v] of Object.entries(x)) {
-                      console.log(k, v);
+                      console.log(k);
+                      console.log(v);
                       return (
                         <>
                           <li>{k}</li>
                           <ul>
                             {Object.entries(v).map((x) => (
                               <li>
+                                {/* {console.log(x)} */}
                                 {x[0]}: {x[1]}
                               </li>
                             ))}
@@ -418,10 +427,6 @@ export default class Map extends Component {
     return (
       <div className="container">
         <div id={this.state.map}></div>
-        {/* <input type="text" 
-               onInput={(ev) => this.geocodeThis(ev)} 
-               id='search' 
-               placeholder='geocode here...' /> */}
         <div className="layerMenu">
           <img
             src={this.state.src}
@@ -432,26 +437,11 @@ export default class Map extends Component {
           />
         </div>
         <CountyDropdown onAction={this.countyChecker.bind(this)} />
-        {console.log(this.state.bottomNav)}
+        {/* {console.log(this.state.bottomNav)} */}
         <div className={this.state.bottomNav}>
           <h1>Affected Members</h1>
-          {console.log(this.state.members)}
+          {/* {console.log(this.state.members)} */}
           {memberList.map((x) => x)}
-          <section className="member_list">
-            {/* <ul>
-              {console.log(Object.entries(this.state.members))}
-              {Object.entries(this.state.members).map((x) => (
-                // give li class to style
-                <li className="member_li">
-                  {x[0]}
-                     {Object.keys(x[1]).forEach((i) => {
-                       console.log()
-                     })}
-                </li>
-              ))}
-              {"\n"}
-            </ul> */}
-          </section>
         </div>
       </div>
     );

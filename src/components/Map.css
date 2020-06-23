@@ -35,13 +35,6 @@ a.mapboxgl-ctrl-logo {
     height: 72%;
 }
 
-.mapboxgl-ctrl-top-right {
-    top: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-}
 
 .mapboxgl-ctrl-bottom-right {
     right: 0;
@@ -140,11 +133,17 @@ button {
     margin-bottom: 236px;
 }
 
-/* ul {
-    list-style-type: none;
-    margin-right: 30px;
-    margin-bottom: 10px;
-} */
+ul {
+    /* list-style-type: none; */
+    margin-left: -20px;
+}
+
+.member-card {
+    background-color: thistle;
+    width: 85%;
+    margin-left: 15px;
+    border-radius: 10px;
+}
 
 .member_li {
     border: black solid 1px;
@@ -176,4 +175,81 @@ button {
 
 .hidden {
     display: none
+}
+
+h1 {
+    font-family: 'Muli', sans-serif;
+    text-align: center;
+    margin: 10px;
+}
+
+.member-cont {
+    font-family: 'Muli', sans-serif;
+}
+
+.member-cont .facil-type {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+@media screen and (min-width: 600px) {
+    .sideNav {
+        background-color: white;
+        position: absolute;
+        width: 30%;
+        height: 100%;
+        bottom: 0;
+        overflow: scroll;
+        border-radius: 17px;
+    }
+    
+    .hidden {
+        display: none
+    }
+
+    #short-map {
+        position: absolute; 
+        top: 0; 
+        bottom: 0; 
+        width: 70%;
+        z-index: -20;
+        right: 0;
+        height: 100%;
+    }
+
+    .mapboxgl-control-container .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder {
+        width: 20%;
+        margin-right: 259px;
+    }
+
+    .mapboxgl-control-container .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border-radius: 17px;
+        /* border: solid black 5px; */
+        padding-left: 5px;
+        padding-top: 11px;
+        width: 170px;
+        background-color: white;
+        /* margin-left: 45px; */
+        text-align: left;
+        height: 47px;
+        width: 224px;
+    }
+
+    .sat-short {
+        margin-bottom: 18px;
+        margin-left: 229px;
+    }
+
+    .mapboxgl-ctrl-group.short {
+        margin: 10px 2px 5px 0 !important;
+        float: right;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .sat-short {
+        margin-left: 575px;
+    }
 }
