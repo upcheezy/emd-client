@@ -304,37 +304,37 @@ export default class Map extends Component {
         });
         console.log(Object.keys(gridIdz));
         let obj = {};
+        data.rows.forEach((member) => {
+          member.id_array.forEach((id) => {
+            if (!obj[id]) {
+              obj[id] = {};
+            }
+          });
+        });
+
+        // console.log(obj);
+
+        Object.keys(obj).forEach((i) => {
           data.rows.forEach((member) => {
-            member.id_array.forEach((id) => {
-              if (!obj[id]) {
-                obj[id] = {};
-              }
-            });
-          });
-
-          // console.log(obj);
-
-          Object.keys(obj).forEach((i) => {
-            data.rows.forEach((member) => {
-              if (member.id_array.includes(+i)) {
-                if (!obj[i][member.faciltype]) {
-                  obj[i][member.faciltype] = {
-                    orgname: {},
-                  };
-                }
-                let memObj = {
-                  name: member.personname,
-                  email: member.email,
-                  phone: member.number,
+            if (member.id_array.includes(+i)) {
+              if (!obj[i][member.faciltype]) {
+                obj[i][member.faciltype] = {
+                  orgname: {},
                 };
-
-                obj[i][member.faciltype]["orgname"][member.orgname] = memObj;
               }
-            });
+              let memObj = {
+                name: member.personname,
+                email: member.email,
+                phone: member.number,
+              };
+
+              obj[i][member.faciltype]["orgname"][member.orgname] = memObj;
+            }
           });
-          this.setState({
-            members: obj,
-          });
+        });
+        this.setState({
+          members: obj,
+        });
         // this.setState({ members: Object.values(data.rows) });
         window.localStorage.setItem("id", null);
         if (window.localStorage.getItem("id")) {
@@ -392,29 +392,33 @@ export default class Map extends Component {
                 <ul className="member-card">
                   {console.log(Object.values(x[1]))}
                   {Object.values(x[1]).map((x) => {
-                    if (Object.entries(x).length === 2) {
-                      // console.log(Object.values(x));
-                      // console.log(Object.entries(x)[1]);
-                    }
-                    console.log(x)
+                    // if (Object.entries(x).length === 2) {
+                    //   // console.log(Object.values(x));
+                    //   // console.log(Object.entries(x)[1]);
+                    // }
+                    // console.log(x)
                     // console.log(Object.entries(x));
-                    for (let [k, v] of Object.entries(x)) {
-                      // console.log(k);
-                      // console.log(v);
-                      return (
-                        <>
-                          <li>{k}</li>
-                          <ul>
-                            {Object.entries(v).map((x) => (
-                              <li>
-                                {/* {console.log(x)} */}
-                                {x[0]}: {x[1]}
-                              </li>
-                            ))}
-                          </ul>
-                        </>
-                      );
+                    function TodoList() {
+                      for (let [k, v] of Object.entries(x)) {
+                        // console.log(k);
+                        // console.log(v);
+                        return (
+                          <>
+                            <li>{k}</li>
+                            <ul>
+                              {Object.entries(v).map((x) => (
+                                <li>
+                                  {/* {console.log(x)} */}
+                                  {x[0]}: {x[1]}
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )
+                      }
                     }
+                    console.log(TodoList())
+                    // TodoList();
                   })}
                 </ul>
               </>
