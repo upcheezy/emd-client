@@ -396,10 +396,11 @@ export default class Map extends Component {
                       // console.log(Object.values(x));
                       // console.log(Object.entries(x)[1]);
                     }
-                    console.log(Object.entries(x));
+                    console.log(x)
+                    // console.log(Object.entries(x));
                     for (let [k, v] of Object.entries(x)) {
-                      console.log(k);
-                      console.log(v);
+                      // console.log(k);
+                      // console.log(v);
                       return (
                         <>
                           <li>{k}</li>
