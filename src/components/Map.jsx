@@ -377,23 +377,25 @@ export default class Map extends Component {
     console.log(node);
   }
 
+  switchText(x) {
+    switch (x[0]) {
+      case 'email': return `${x[0]}: <a href={mailto: ${x[1]}}> ${x[1]} </a>`;
+      case 'phone': return `${x[0]}: <a href={tel: ${x[1]}}> ${x[1]} </a>`;
+      default: return `${x[0]}: ${x[1]}`
+    }
+  }
+
   TodoList(x) {
     return Object.entries(x).map((obj) => {
 
       return (
         <>
           <div className="member-card">
-            <p>{obj[0]}</p>
+            <p className="orgname-text">{obj[0]}</p>
             <ul>
               {Object.entries(obj[1]).map((x) => (
                 <li>
-                  {(() => {
-                    switch (x[0]) {
-                      case 'email': return `${x[0]}: <a href = {mailto: ${x[1]}>${x[1]}</a>`;
-                      case 'phone': return 'phonenum:' + <a href = {'tel:' + 8033702170}> + '8033702170'</a>;
-                      default: return `${x[0]}: ${x[1]}`
-                    }
-                  })()}
+                  {this.switchText(x)}
                   {/* {console.log(x)} */}
                   
                 </li>
