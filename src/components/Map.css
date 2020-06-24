@@ -141,8 +141,11 @@ ul {
 .member-card {
     background-color: thistle;
     width: 85%;
-    margin-left: 15px;
+    margin-left: 1px;
     border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
+    display: inline-block;
 }
 
 .member_li {

@@ -377,6 +377,34 @@ export default class Map extends Component {
     console.log(node);
   }
 
+  TodoList(x) {
+    return Object.entries(x).map((obj) => {
+
+      return (
+        <>
+          <div className="member-card">
+            <p>{obj[0]}</p>
+            <ul>
+              {Object.entries(obj[1]).map((x) => (
+                <li>
+                  {(() => {
+                    switch (x[0]) {
+                      case 'email': return `${x[0]}: <a href = {mailto: ${x[1]}>${x[1]}</a>`;
+                      case 'phone': return 'phonenum:' + <a href = {'tel:' + 8033702170}> + '8033702170'</a>;
+                      default: return `${x[0]}: ${x[1]}`
+                    }
+                  })()}
+                  {/* {console.log(x)} */}
+                  
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      );
+    });
+  }
+
   render() {
     let memberList = [];
     for (let [key, value] of Object.entries(this.state.members)) {
@@ -389,38 +417,13 @@ export default class Map extends Component {
             return (
               <>
                 <p className="facil-type">{x[0]}</p>
-                <ul className="member-card">
-                  {console.log(Object.values(x[1]))}
-                  {Object.values(x[1]).map((x) => {
-                    // if (Object.entries(x).length === 2) {
-                    //   // console.log(Object.values(x));
-                    //   // console.log(Object.entries(x)[1]);
-                    // }
-                    // console.log(x)
-                    // console.log(Object.entries(x));
-                    function TodoList() {
-                      for (let [k, v] of Object.entries(x)) {
-                        // console.log(k);
-                        // console.log(v);
-                        return (
-                          <>
-                            <li>{k}</li>
-                            <ul>
-                              {Object.entries(v).map((x) => (
-                                <li>
-                                  {/* {console.log(x)} */}
-                                  {x[0]}: {x[1]}
-                                </li>
-                              ))}
-                            </ul>
-                          </>
-                        )
-                      }
-                    }
-                    console.log(TodoList())
-                    // TodoList();
-                  })}
-                </ul>
+                {Object.values(x[1]).map((x) => {
+                  for (let [k, v] of Object.entries(x)) {
+                    console.log(k);
+                    console.log(v);
+                    return this.TodoList(x);
+                  }
+                })}
               </>
             );
           })}
