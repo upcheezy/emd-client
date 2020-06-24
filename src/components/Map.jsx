@@ -377,14 +377,6 @@ export default class Map extends Component {
     console.log(node);
   }
 
-  switchText(x) {
-    switch (x[0]) {
-      case 'email': return `${x[0]}: <a href={mailto: ${x[1]}}> ${x[1]} </a>`;
-      case 'phone': return `${x[0]}: <a href={tel: ${x[1]}}> ${x[1]} </a>`;
-      default: return `${x[0]}: ${x[1]}`
-    }
-  }
-
   TodoList(x) {
     return Object.entries(x).map((obj) => {
 
@@ -395,7 +387,13 @@ export default class Map extends Component {
             <ul>
               {Object.entries(obj[1]).map((x) => (
                 <li>
-                  {this.switchText(x)}
+                  {(() => {
+                    switch (x[0]) {
+                      case 'email': return x[0] + ':' + <a href={"maito:" + x[1]}> x[1] </a>;
+                      case 'phone': return x[0] + ':' + <a href={"tel:" + x[1]}>x[1]</a>;
+                      default: return `${x[0]}: ${x[1]}`
+                    }
+                  })()}
                   {/* {console.log(x)} */}
                   
                 </li>
@@ -407,12 +405,20 @@ export default class Map extends Component {
     });
   }
 
+  facilSwitcher(x) {
+    switch (x) {
+      case 'email': return x[0] + ':' + <a href={"maito:" + x[1]}> x[1] </a>;
+      case 'phone': return x[0] + ':' + <a href={"tel:" + x[1]}>x[1]</a>;
+      default: return `${x[0]}: ${x[1]}`
+    }
+  }
+
   render() {
     let memberList = [];
     for (let [key, value] of Object.entries(this.state.members)) {
       let member = (
         <div className="member-cont">
-          <p>Grid: {key}</p>
+          <p className="grid-heading">Grid: {key}</p>
           <hr />
           {Object.entries(value).map((x) => {
             // console.log(x)
