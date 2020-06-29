@@ -1,16 +1,25 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Route } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Login from '../src/components/Login';
 import Main from '../src/components/Main';
 import Signup from '../src/components/Signup';
 
 class App extends Component {
-  state = {}
+  state = {
+    isAuth: false
+  }
+
+  componentDidMount() {
+    let token = window.localStorage.getItem('token')
+    if (!token) {
+      return
+    }
+    this.setState({isAuth: true})
+  }
 
   Login = (loginData) => {
-    console.log(loginData);
-    fetch("http://gis17-01:8000/login", {
+    fetch("https://shielded-sands-48155.herokuapp.com/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -24,16 +33,16 @@ class App extends Component {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         if (data.token) {
-          window.location.replace('/main')
+          window.localStorage.setItem('token',data.token)
+          this.setState({isAuth: true})
         }
       })
       .catch((error) => this.setState({ error }));
   }
 
   Signup = (SignupData) => {
-    fetch("http://gis17-01:8000/signup", {
+    fetch("https://shielded-sands-48155.herokuapp.com/signup", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -46,22 +55,31 @@ class App extends Component {
         }
         return res.json();
       })
-      .then((data) => {
-        console.log(data);
-      })
       .catch((error) => this.setState({ error }));
   }
   
   render() {
-    return (
-      <div className="App">
-        <Route exact path='/login' render={() => {
+    let routes = (
+      <Switch>
+        <Route exact path='/' render={() => {
           return <Login onLogin={this.Login} />
         }} />
-        <Route exact path='/main' component={Main} />
         <Route exact path='/signup/:accesskey' render={(routeProps) => {
           return <Signup onSignup={this.Signup} {...routeProps} />
         }} />
+        <Redirect to='/' />
+      </Switch>
+    )
+    if (this.state.isAuth) {
+      routes = (
+        <Switch>
+          <Route exact path='/' component={Main} />
+        </Switch>
+      )
+    }
+    return (
+      <div className="App">
+        {routes}
       </div>
     );
   }

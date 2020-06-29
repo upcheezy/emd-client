@@ -15,7 +15,6 @@ class Login extends Component {
 
   handleSubmit = (ev) => {
     ev.preventDefault()
-
     this.props.onLogin(this.state)
   }
 
@@ -37,7 +36,7 @@ class Login extends Component {
               <label htmlFor="password"></label>
               <input type="password" name="password" id="password" placeholder='password' required onChange={this.changeHandler} />
             </div>
-            <button type="submit">Login</button>
+            <input type="submit" value="Sign In" className="signin-button" />
           </form>
         </div>
       </div>

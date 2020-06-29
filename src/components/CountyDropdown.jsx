@@ -16,10 +16,11 @@ export default class CountyDropdown extends Component {
   };
 
   componentDidMount() {
-    fetch("http://gis17-01:8000/counties", {
+    fetch("https://shielded-sands-48155.herokuapp.com/counties", {
       method: "GET",
       headers: {
         "content-type": "application/json",
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}` 
       },
     })
       .then((res) => {
@@ -33,7 +34,6 @@ export default class CountyDropdown extends Component {
   }
 
   handleDropdownChange = (e) => {
-    console.log(e.target.value)
     this.setState(
       {
         value: e.target.value,
@@ -42,11 +42,9 @@ export default class CountyDropdown extends Component {
         this.props.onAction(this.state.value);
       }
     );
-    // console.log(this.state.value)
   };
 
   render() {
-    // console.log(this.props)
     return (
       <form className="county-dropdown">
         <label htmlFor="County Search"></label>

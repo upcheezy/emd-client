@@ -215,7 +215,7 @@ h1 {
 .facil-type {
     font-weight: bold;
     margin-left: 10px;
-    font-size: 18.5px;
+    font-size: 19px;
     letter-spacing: 1.5px;
 }
 
@@ -223,7 +223,7 @@ h1 {
     .sideNav {
         background-color: #D9C6C6;
         position: absolute;
-        width: 30%;
+        width: 35%;
         height: 100%;
         bottom: 0;
         overflow: scroll;
@@ -242,7 +242,7 @@ h1 {
         position: absolute; 
         top: 0; 
         bottom: 0; 
-        width: 72%;
+        width: 68%;
         z-index: -20;
         right: 0;
         height: 100%;
@@ -270,7 +270,7 @@ h1 {
 
     .sat-short {
         margin-bottom: 18px;
-        margin-left: 229px;
+        margin-left: 259px;
     }
 
     .mapboxgl-ctrl-group.short {
@@ -280,6 +280,7 @@ h1 {
 
     .member-card {
         margin-left: 20px;
+        overflow: hidden;
     }
 }
 

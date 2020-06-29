@@ -37,7 +37,7 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
 }
 
-button {
+.signin-button {
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
@@ -45,4 +45,6 @@ button {
     border: none;
     cursor: pointer;
     width: 100%;
+    font-family: 'Muli', sans-serif;
+    font-size: 17px;
 }
