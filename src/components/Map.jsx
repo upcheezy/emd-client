@@ -123,7 +123,7 @@ export default class Map extends Component {
   }
 
   componentDidMount() {
-    mapboxgl.accessToken = config.MAPBOX_API_TOKEN;
+    mapboxgl.accessToken = config.REACT_APP_MAPBOX_API_TOKEN;
     window.map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
