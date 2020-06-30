@@ -26,11 +26,11 @@ export default class Map extends Component {
 
   fetchGrid() {
     this.toggleBottomNav();
-    fetch("https://shielded-sands-48155.herokuapp.com/grid", {
+    fetch("http://gis17-01:8000/grid", {
       method: "GET",
       headers: {
         "content-type": "application/json",
-        "Authorization": `Bearer ${window.localStorage.getItem('token')}` 
+        Authorization: `Bearer ${window.localStorage.getItem("token")}`,
       },
     })
       .then((res) => {
@@ -98,6 +98,30 @@ export default class Map extends Component {
               "fill-opacity": 0.8,
             },
           });
+
+          window.map.on("click", "maine", (ev) => {
+            console.log(ev.features[0].properties.id);
+            console.log(this.state.members);
+            let matchId = ev.features[0].properties.id;
+            const filtered = Object.keys(this.state.members)
+              .filter((key) => matchId.includes(key))
+              .reduce((obj, key) => {
+                obj[key] = this.state.members[key];
+                return obj;
+              }, {});
+            this.setState({ members: filtered });
+          });
+
+          // Change the cursor to a pointer when the mouse is over the places layer.
+          window.map.on("mouseenter", "maine", function () {
+            window.map.getCanvas().style.cursor = "pointer";
+          });
+
+          // Change it back to a pointer when it leaves.
+          window.map.on("mouseleave", "maine", function () {
+            window.map.getCanvas().style.cursor = "";
+          });
+
           window.map.addSource("label", {
             type: "geojson",
             data: gjC,
@@ -108,13 +132,13 @@ export default class Map extends Component {
             type: "symbol",
             source: "label",
             layout: {
-              "text-field": ["get","id"],
-              "text-size": 30,   
+              "text-field": ["get", "id"],
+              "text-size": 30,
             },
             paint: {
               "text-color": "red",
               "text-halo-width": 1,
-              "text-halo-color": "white"  
+              "text-halo-color": "white",
             },
           });
         }
@@ -132,11 +156,11 @@ export default class Map extends Component {
     });
 
     const fetchIntersect = (datapoints, type) => {
-      fetch("https://shielded-sands-48155.herokuapp.com/draw", {
+      fetch("http://gis17-01:8000/draw", {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "Authorization": `Bearer ${window.localStorage.getItem('token')}` 
+          Authorization: `Bearer ${window.localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           coords: datapoints,
@@ -200,7 +224,7 @@ export default class Map extends Component {
     };
 
     const address = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
+      accessToken: config.REACT_APP_MAPBOX_API_TOKEN,
       mapboxgl: mapboxgl,
       countries: "us",
       bbox: [-83.726807, 31.784217, -78.013916, 35.415915],
@@ -237,11 +261,11 @@ export default class Map extends Component {
   }
 
   countyChecker(name) {
-    fetch("https://shielded-sands-48155.herokuapp.com/countyselect", {
+    fetch("http://gis17-01:8000/countyselect", {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "Authorization": `Bearer ${window.localStorage.getItem('token')}` 
+        Authorization: `Bearer ${window.localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
         countyname: name,
@@ -341,16 +365,24 @@ export default class Map extends Component {
             <ul>
               {Object.entries(obj[1]).map((x) => {
                 let contact;
-                if (x[0] === 'email' && x[1] !== 'NULL') {
-                    contact = (<>{`${x[0]}: `} <a href={`mailto:${x[1]}`}> {x[1]} </a></>);
-                } else if (x[0] === 'phone' && x[1] !== 'NULL') {
-                    contact = (<>{`${x[0]}: `} <a href={`tel:${x[1]}`}> {x[1]} </a></>);
-                } else if (x[1] === 'NULL') {
-                  contact = (<>{`${x[0]}: `}</>);
+                if (x[0] === "email" && x[1] !== "NULL") {
+                  contact = (
+                    <>
+                      {`${x[0]}: `} <a href={`mailto:${x[1]}`}> {x[1]} </a>
+                    </>
+                  );
+                } else if (x[0] === "phone" && x[1] !== "NULL") {
+                  contact = (
+                    <>
+                      {`${x[0]}: `} <a href={`tel:${x[1]}`}> {x[1]} </a>
+                    </>
+                  );
+                } else if (x[1] === "NULL") {
+                  contact = <>{`${x[0]}: `}</>;
                 } else {
-                    contact = (<>{`${x[0]}: ${x[1]}`}</>);
+                  contact = <>{`${x[0]}: ${x[1]}`}</>;
                 }
-                return (<li>{contact}</li>);
+                return <li>{contact}</li>;
               })}
             </ul>
           </div>
@@ -364,14 +396,14 @@ export default class Map extends Component {
     for (let [key, value] of Object.entries(this.state.members)) {
       let member = (
         <div className="member-cont">
-          <p className='grid-heading'>Grid: {key}</p>
+          <p className="grid-heading">Grid: {key}</p>
           <hr />
           {Object.entries(value).map((x) => {
             let facilColor = {
               "Buried Environmental Transmitters": "red",
               "Propane Gas": "yellow",
               "Petroleum Pipeline": "yellow",
-              "Telecommunications": "red",
+              Telecommunications: "red",
               Water: "blue",
               "Diesel Fuel": "yellow",
               Communications: "red",
@@ -392,12 +424,21 @@ export default class Map extends Component {
               Gas: "yellow",
               Fiber: "orange",
               Pipeline: "yellow",
-              Cable: "red"
-            }
+              Cable: "red",
+            };
             return (
               <>
-                <div style={{'display': 'flex', 'margin-left': '5%'}}>
-                  <div style={{'backgroundColor':facilColor[x[0]], 'height':'12px','width': '12px', 'border-radius': '50%','margin': 'auto 0','border': '1.5px solid black'}}></div>
+                <div style={{ display: "flex", "margin-left": "5%" }}>
+                  <div
+                    style={{
+                      backgroundColor: facilColor[x[0]],
+                      height: "12px",
+                      width: "12px",
+                      "border-radius": "50%",
+                      margin: "auto 0",
+                      border: "1.5px solid black",
+                    }}
+                  ></div>
                   <p className="facil-type">{x[0]}</p>
                 </div>
                 {Object.values(x[1]).map((x) => {
