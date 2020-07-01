@@ -86,7 +86,6 @@ export default class Map extends Component {
             geometry: turf.centroid(element).geometry,
           });
         });
-        console.log(gj);
         // Add the label point source
         if (window.map.getLayer("maine")) {
           window.map.getSource("maine").setData(gj);
@@ -113,8 +112,6 @@ export default class Map extends Component {
           });
 
           window.map.on("click", "maine", (ev) => {
-            console.log(ev.features[0].properties.id);
-            console.log(this.state.filteredMember);
             let matchId = ev.features[0].properties.id;
             // const members = this.state.members;
             const filtered = Object.keys(this.state.members)
@@ -449,14 +446,14 @@ export default class Map extends Component {
               "Storm Drain": green,
               Electric: red,
               Traffic: orange,
-              "Groundwater Recovery Lines": blue,
-              "Waste Water": blue,
+              "Groundwater Recovery Lines": purple,
+              "Waste Water": purple,
               "Natural Gas": yellow,
-              "Storm Water": blue,
+              "Storm Water": green,
               Phone: orange,
               Sewer: green,
               "JETA Fuel": yellow,
-              Irrigation: blue,
+              Irrigation: purple,
               Gas: yellow,
               Fiber: orange,
               Pipeline: yellow,
