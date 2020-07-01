@@ -33,7 +33,7 @@ export default class Map extends Component {
 
   fetchGrid() {
     this.toggleBottomNav();
-    fetch("http://gis17-01:8000/grid", {
+    fetch("https://shielded-sands-48155.herokuapp.com/grid", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -187,7 +187,7 @@ export default class Map extends Component {
     });
 
     const fetchIntersect = (datapoints, type) => {
-      fetch("http://gis17-01:8000/draw", {
+      fetch("https://shielded-sands-48155.herokuapp.com/draw", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -293,7 +293,7 @@ export default class Map extends Component {
   }
 
   countyChecker(name) {
-    fetch("http://gis17-01:8000/countyselect", {
+    fetch("https://shielded-sands-48155.herokuapp.com/countyselect", {
       method: "POST",
       headers: {
         "content-type": "application/json",
