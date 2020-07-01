@@ -6,6 +6,12 @@ import config from "../config";
 import sat from "../images/satellite.PNG";
 import st from "../images/street.PNG";
 import * as turf from "@turf/turf";
+import orange from "../images/orange.png";
+import red from "../images/red.png";
+import yellow from "../images/yellow.png";
+import green from "../images/green.png";
+import blue from "../images/blue.png";
+import purple from "../images/purple.png";
 const MapboxDraw = require("@mapbox/mapbox-gl-draw");
 const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
 const Parse = require("wellknown");
@@ -14,6 +20,7 @@ export default class Map extends Component {
   state = {
     error: null,
     members: {},
+    filteredMember: {},
     grid: [],
     drawCoords: "",
     layerId: "satellite-streets-v10",
@@ -79,6 +86,7 @@ export default class Map extends Component {
             geometry: turf.centroid(element).geometry,
           });
         });
+        console.log(gj);
         // Add the label point source
         if (window.map.getLayer("maine")) {
           window.map.getSource("maine").setData(gj);
@@ -95,31 +103,57 @@ export default class Map extends Component {
             source: "maine",
             paint: {
               "fill-color": "#088",
-              "fill-opacity": 0.8,
+              "fill-opacity": [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                1,
+                0.5,
+              ],
             },
           });
 
           window.map.on("click", "maine", (ev) => {
             console.log(ev.features[0].properties.id);
-            console.log(this.state.members);
+            console.log(this.state.filteredMember);
             let matchId = ev.features[0].properties.id;
+            // const members = this.state.members;
             const filtered = Object.keys(this.state.members)
               .filter((key) => matchId.includes(key))
               .reduce((obj, key) => {
                 obj[key] = this.state.members[key];
                 return obj;
               }, {});
-            this.setState({ members: filtered });
+            this.setState({ filteredMember: filtered });
           });
 
+          let hoverId = null;
+
           // Change the cursor to a pointer when the mouse is over the places layer.
-          window.map.on("mouseenter", "maine", function () {
+          window.map.on("mouseenter", "maine", (ev) => {
             window.map.getCanvas().style.cursor = "pointer";
+            if (ev.features.length > 0) {
+              if (hoverId) {
+                window.map.setFeatureState(
+                  { source: "maine", id: hoverId },
+                  { hover: false }
+                );
+              }
+              hoverId = ev.features[0].id;
+              window.map.setFeatureState(
+                { source: "maine", id: hoverId },
+                { hover: true }
+              );
+            }
           });
 
           // Change it back to a pointer when it leaves.
-          window.map.on("mouseleave", "maine", function () {
+          window.map.on("mouseleave", "maine", () => {
+            let hoverId = null;
             window.map.getCanvas().style.cursor = "";
+            window.map.setFeatureState(
+              { source: "maine", id: hoverId },
+              { hover: false }
+            );
           });
 
           window.map.addSource("label", {
@@ -212,6 +246,7 @@ export default class Map extends Component {
           });
           this.setState({
             members: obj,
+            filteredMember: obj
           });
           window.localStorage.setItem("id", null);
           if (window.localStorage.getItem("id")) {
@@ -315,6 +350,7 @@ export default class Map extends Component {
         });
         this.setState({
           members: obj,
+          filteredMember: obj
         });
         // this.setState({ members: Object.values(data.rows) });
         window.localStorage.setItem("id", null);
@@ -393,52 +429,54 @@ export default class Map extends Component {
 
   render() {
     let memberList = [];
-    for (let [key, value] of Object.entries(this.state.members)) {
+    for (let [key, value] of Object.entries(this.state.filteredMember)) {
       let member = (
         <div className="member-cont">
           <p className="grid-heading">Grid: {key}</p>
           <hr />
           {Object.entries(value).map((x) => {
             let facilColor = {
-              "Buried Environmental Transmitters": "red",
-              "Propane Gas": "yellow",
-              "Petroleum Pipeline": "yellow",
-              Telecommunications: "red",
-              Water: "blue",
-              "Diesel Fuel": "yellow",
-              Communications: "red",
-              Steam: "yellow",
-              "Land Use Control": "blue",
-              "Chilled Water": "blue",
-              "Storm Drain": "green",
-              Electric: "red",
-              Traffic: "red",
-              "Groundwater Recovery Lines": "blue",
-              "Waste Water": "blue",
-              "Natural Gas": "yellow",
-              "Storm Water": "blue",
-              Phone: "orange",
-              Sewer: "green",
-              "JETA Fuel": "yellow",
-              Irrigation: "blue",
-              Gas: "yellow",
-              Fiber: "orange",
-              Pipeline: "yellow",
-              Cable: "red",
+              "Buried Environmental Transmitters": red,
+              "Propane Gas": yellow,
+              "Petroleum Pipeline": yellow,
+              Telecommunications: orange,
+              Water: blue,
+              "Diesel Fuel": yellow,
+              Communications: red,
+              Steam: yellow,
+              "Land Use Control": blue,
+              "Chilled Water": blue,
+              "Storm Drain": green,
+              Electric: red,
+              Traffic: orange,
+              "Groundwater Recovery Lines": blue,
+              "Waste Water": blue,
+              "Natural Gas": yellow,
+              "Storm Water": blue,
+              Phone: orange,
+              Sewer: green,
+              "JETA Fuel": yellow,
+              Irrigation: blue,
+              Gas: yellow,
+              Fiber: orange,
+              Pipeline: yellow,
+              Cable: orange,
             };
             return (
               <>
                 <div style={{ display: "flex", "margin-left": "5%" }}>
                   <div
                     style={{
-                      backgroundColor: facilColor[x[0]],
-                      height: "12px",
-                      width: "12px",
-                      "border-radius": "50%",
+                    //   backgroundColor: facilColor[x[0]],
+                      // height: "18px",
+                      // width: "18px",
+                    //   "border-radius": "50%",
                       margin: "auto 0",
-                      border: "1.5px solid black",
+                    //   border: "1.5px solid black",
                     }}
-                  ></div>
+                  >
+                    <img src={facilColor[x[0]]} style={{height: "30px"}} alt=""/>
+                  </div>
                   <p className="facil-type">{x[0]}</p>
                 </div>
                 {Object.values(x[1]).map((x) => {
