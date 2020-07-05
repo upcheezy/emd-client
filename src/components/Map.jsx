@@ -38,6 +38,7 @@ export default class Map extends Component {
       headers: {
         "content-type": "application/json",
         Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+        "Access-Control-Allow-Origin": "*",
       },
     })
       .then((res) => {
@@ -86,6 +87,8 @@ export default class Map extends Component {
             geometry: turf.centroid(element).geometry,
           });
         });
+        console.log(gj);
+        console.log(gjC);
         // Add the label point source
         if (window.map.getLayer("maine")) {
           window.map.getSource("maine").setData(gj);
@@ -94,6 +97,7 @@ export default class Map extends Component {
           window.map.addSource("maine", {
             type: "geojson",
             data: gj,
+            generateId: true,
           });
 
           window.map.addLayer({
@@ -104,14 +108,26 @@ export default class Map extends Component {
               "fill-color": "#088",
               "fill-opacity": [
                 "case",
-                ["boolean", ["feature-state", "hover"], false],
-                1,
+                ["boolean", ["feature-state", "click"], false],
+                0.75,
                 0.5,
               ],
             },
           });
 
+          let hoverId = null;
+
           window.map.on("click", "maine", (ev) => {
+            window.map.setFeatureState(
+              { source: "maine", id: hoverId },
+              { click: false }
+            );
+            window.map.removeFeatureState(
+              { source: "maine", id: hoverId },
+              // { click: false }
+            );
+            // hoverId = null;
+            console.log(ev);
             let matchId = ev.features[0].properties.id;
             // const members = this.state.members;
             const filtered = Object.keys(this.state.members)
@@ -121,26 +137,25 @@ export default class Map extends Component {
                 return obj;
               }, {});
             this.setState({ filteredMember: filtered });
-          });
-
-          let hoverId = null;
-
-          // Change the cursor to a pointer when the mouse is over the places layer.
-          window.map.on("mouseenter", "maine", (ev) => {
-            window.map.getCanvas().style.cursor = "pointer";
+            console.log(ev.features)
             if (ev.features.length > 0) {
               if (hoverId) {
-                window.map.setFeatureState(
+                window.map.removeFeatureState(
                   { source: "maine", id: hoverId },
-                  { hover: false }
+                  // { click: false }
                 );
               }
               hoverId = ev.features[0].id;
               window.map.setFeatureState(
                 { source: "maine", id: hoverId },
-                { hover: true }
+                { click: true }
               );
             }
+          });
+
+          // Change the cursor to a pointer when the mouse is over the places layer.
+          window.map.on("mouseenter", "maine", (ev) => {
+            window.map.getCanvas().style.cursor = "pointer";
           });
 
           // Change it back to a pointer when it leaves.
@@ -192,6 +207,7 @@ export default class Map extends Component {
         headers: {
           "content-type": "application/json",
           Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           coords: datapoints,
@@ -223,6 +239,11 @@ export default class Map extends Component {
             });
           });
 
+          window.map.removeFeatureState(
+            { source: "maine" },
+            // { click: false }
+          );
+
           Object.keys(obj).forEach((i) => {
             data.rows.forEach((member) => {
               if (member.id_array.includes(+i)) {
@@ -243,7 +264,7 @@ export default class Map extends Component {
           });
           this.setState({
             members: obj,
-            filteredMember: obj
+            filteredMember: obj,
           });
           window.localStorage.setItem("id", null);
           if (window.localStorage.getItem("id")) {
@@ -282,6 +303,9 @@ export default class Map extends Component {
     };
 
     window.map.on("draw.create", (ev) => {
+      window.map.removeFeatureState(
+        { source: "maine" },
+      );
       draw.delete(this.state.drawCoords);
       this.setState({ drawCoords: ev.features[0].id });
       fetchIntersect(ev.features[0].geometry.coordinates[0], "draw");
@@ -298,6 +322,7 @@ export default class Map extends Component {
       headers: {
         "content-type": "application/json",
         Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         countyname: name,
@@ -347,7 +372,7 @@ export default class Map extends Component {
         });
         this.setState({
           members: obj,
-          filteredMember: obj
+          filteredMember: obj,
         });
         // this.setState({ members: Object.values(data.rows) });
         window.localStorage.setItem("id", null);
@@ -355,6 +380,9 @@ export default class Map extends Component {
           window.localStorage.removeItem("id");
         }
         window.localStorage.setItem("id", Object.keys(gridIdz));
+        window.map.removeFeatureState(
+          { source: "maine" }
+        );
         this.fetchGrid();
       })
       .catch((error) => this.setState({ error }));
@@ -464,15 +492,19 @@ export default class Map extends Component {
                 <div style={{ display: "flex", "margin-left": "5%" }}>
                   <div
                     style={{
-                    //   backgroundColor: facilColor[x[0]],
+                      //   backgroundColor: facilColor[x[0]],
                       // height: "18px",
                       // width: "18px",
-                    //   "border-radius": "50%",
+                      //   "border-radius": "50%",
                       margin: "auto 0",
-                    //   border: "1.5px solid black",
+                      //   border: "1.5px solid black",
                     }}
                   >
-                    <img src={facilColor[x[0]]} style={{height: "30px"}} alt=""/>
+                    <img
+                      src={facilColor[x[0]]}
+                      style={{ height: "22px" }}
+                      alt=""
+                    />
                   </div>
                   <p className="facil-type">{x[0]}</p>
                 </div>

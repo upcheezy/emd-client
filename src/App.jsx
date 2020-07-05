@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Login from '../src/components/Login';
 import Main from '../src/components/Main';
 import Signup from '../src/components/Signup';
@@ -23,6 +23,7 @@ class App extends Component {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "Access-Control-Allow-Origin": "*"
       },
       body: JSON.stringify(loginData),
     })
@@ -36,6 +37,7 @@ class App extends Component {
         if (data.token) {
           window.localStorage.setItem('token',data.token)
           this.setState({isAuth: true})
+          this.props.history.push('/')
         }
       })
       .catch((error) => this.setState({ error }));
@@ -46,6 +48,7 @@ class App extends Component {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "Access-Control-Allow-Origin": "*"
       },
       body: JSON.stringify(SignupData),
     })
@@ -54,6 +57,9 @@ class App extends Component {
           throw new Error(res.status);
         }
         return res.json();
+      })
+      .then(() => {
+        this.Login(SignupData)
       })
       .catch((error) => this.setState({ error }));
   }
@@ -85,4 +91,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

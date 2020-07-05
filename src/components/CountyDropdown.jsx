@@ -20,7 +20,8 @@ export default class CountyDropdown extends Component {
       method: "GET",
       headers: {
         "content-type": "application/json",
-        "Authorization": `Bearer ${window.localStorage.getItem('token')}` 
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+        "Access-Control-Allow-Origin": "*"
       },
     })
       .then((res) => {
