@@ -87,8 +87,6 @@ export default class Map extends Component {
             geometry: turf.centroid(element).geometry,
           });
         });
-        console.log(gj);
-        console.log(gjC);
         // Add the label point source
         if (window.map.getLayer("maine")) {
           window.map.getSource("maine").setData(gj);
@@ -127,7 +125,6 @@ export default class Map extends Component {
               // { click: false }
             );
             // hoverId = null;
-            console.log(ev);
             let matchId = ev.features[0].properties.id;
             // const members = this.state.members;
             const filtered = Object.keys(this.state.members)
@@ -137,7 +134,6 @@ export default class Map extends Component {
                 return obj;
               }, {});
             this.setState({ filteredMember: filtered });
-            console.log(ev.features)
             if (ev.features.length > 0) {
               if (hoverId) {
                 window.map.removeFeatureState(
