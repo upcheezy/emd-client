@@ -287,19 +287,28 @@ h1 {
 
 @media screen and (min-width: 1000px) {
     .sat-short {
-        margin-left: 575px;
+        /* margin-left: 327px;
+        margin-bottom: 18px; */
+        float: right;
     }
 
     .sideNav {
         width: 20%;
     }
 
+    .layerMenu {
+        width: 26%;
+        margin-left: 0;
+    }
+
     #short-map {
         width: 80%;
     }
+}
 
-    .sat-short {
-        margin-bottom: 18px;
-        margin-left: 385px;
+@media screen and (min-width: 1700px) {
+    .layerMenu {
+        width: 25%;
+        margin-left: 0;
     }
 }
