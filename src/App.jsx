@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   Login = (loginData) => {
-    fetch("https://shielded-sands-48155.herokuapp.com/login", {
+    fetch("http://gis17-01:8000/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -44,7 +44,7 @@ class App extends Component {
   }
 
   Signup = (SignupData) => {
-    fetch("https://shielded-sands-48155.herokuapp.com/signup", {
+    fetch("http://gis17-01:8000/signup", {
       method: "POST",
       headers: {
         "content-type": "application/json",

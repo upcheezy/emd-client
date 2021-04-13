@@ -33,7 +33,7 @@ export default class Map extends Component {
 
   fetchGrid() {
     this.toggleBottomNav();
-    fetch("https://shielded-sands-48155.herokuapp.com/grid", {
+    fetch("http://gis17-01:8000/grid", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -198,7 +198,7 @@ export default class Map extends Component {
     });
 
     const fetchIntersect = (datapoints, type) => {
-      fetch("https://shielded-sands-48155.herokuapp.com/draw", {
+      fetch("http://gis17-01:8000/draw", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -278,6 +278,7 @@ export default class Map extends Component {
       countries: "us",
       bbox: [-83.726807, 31.784217, -78.013916, 35.415915],
     }).on("result", function ({ result }) {
+      console.log(result.geometry.coordinates)
       fetchIntersect(result.geometry.coordinates, "point");
     });
     window.map.addControl(address);
@@ -313,7 +314,7 @@ export default class Map extends Component {
   }
 
   countyChecker(name) {
-    fetch("https://shielded-sands-48155.herokuapp.com/countyselect", {
+    fetch("http://gis17-01:8000/countyselect", {
       method: "POST",
       headers: {
         "content-type": "application/json",
