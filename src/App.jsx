@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   Login = (loginData) => {
-    fetch("http://gis17-01:8000/login", {
+    fetch("https://emd-server.sc811.com//login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -31,6 +31,7 @@ class App extends Component {
         if (!res.ok) {
           throw new Error(res.status);
         }
+        // console.log('inside then')
         return res.json();
       })
       .then((data) => {
@@ -44,7 +45,7 @@ class App extends Component {
   }
 
   Signup = (SignupData) => {
-    fetch("http://gis17-01:8000/signup", {
+    fetch("https://emd-server.sc811.com//signup", {
       method: "POST",
       headers: {
         "content-type": "application/json",

@@ -16,7 +16,7 @@ export default class CountyDropdown extends Component {
   };
 
   componentDidMount() {
-    fetch("http://gis17-01:8000/counties", {
+    fetch("https://emd-server.sc811.com//counties", {
       method: "GET",
       headers: {
         "content-type": "application/json",

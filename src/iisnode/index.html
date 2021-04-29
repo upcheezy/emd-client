@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>iisnode logs</title>
+    <style type="text/css">
+        body
+        {
+            font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+        }
+        table
+        {
+            border-collapse: collapse;
+        }
+        td, th
+        {
+            border: 1px solid lightgray;
+            padding: 3px 7px 2px 7px;
+        }
+        th
+        {
+            text-align: left;
+            padding-top: 5px;
+            padding-bottom: 4px;
+            background-color: Gray;
+            color: #ffffff;
+        }
+        td.stderr
+        {
+            color: Red;
+        }
+    </style>
+</head>
+<body>
+    <table id="logFilesTable">
+        <tr>
+            <th>
+                Computer name
+            </th>
+            <th>
+                PID
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Link
+            </th>
+        </tr>
+    </table>
+    <p id="lastUpdated"></p>
+    <script type="text/javascript">
+
+        // this is replaced with actual data at runtime by code in interceptor.js
+        var logFiles = [{"file":"MAPAPP-104-stderr-1617814988720.txt","computername":"MAPAPP","pid":104,"type":"stderr","created":1617814988720},{"file":"MAPAPP-1108-stderr-1617815509341.txt","computername":"MAPAPP","pid":1108,"type":"stderr","created":1617815509341},{"file":"MAPAPP-4596-stderr-1617815458627.txt","computername":"MAPAPP","pid":4596,"type":"stderr","created":1617815458627},{"file":"MAPAPP-5048-stderr-1617815424558.txt","computername":"MAPAPP","pid":5048,"type":"stderr","created":1617815424558},{"file":"MAPAPP-8948-stderr-1617814989433.txt","computername":"MAPAPP","pid":8948,"type":"stderr","created":1617814989433},{"file":"MAPAPP-9456-stderr-1617815509038.txt","computername":"MAPAPP","pid":9456,"type":"stderr","created":1617815509038},{"file":"MAPAPP-9476-stderr-1617815458916.txt","computername":"MAPAPP","pid":9476,"type":"stderr","created":1617815458916},{"file":"MAPAPP-9864-stderr-1617815425309.txt","computername":"MAPAPP","pid":9864,"type":"stderr","created":1617815425309}];
+        var lastUpdated = 1617815509348;
+        var date = new Date();
+
+        date.setTime(lastUpdated);
+        document.getElementById('lastUpdated').innerHTML = 'Index was last updated ' + date;
+
+        logFiles.sort(function (a, b) {
+            return b.created - a.created;
+        });
+
+        var logFilesTable = document.getElementById("logFilesTable");
+        for (var i = 0; i < logFiles.length; i++) {
+            var logFile = logFiles[i];
+            date.setTime(logFile.created);
+            var row = logFilesTable.insertRow(-1);
+            var computerNameCell = row.insertCell(0);
+            var pidCell = row.insertCell(1);
+            var typeCell = row.insertCell(2);
+            var dateCell = row.insertCell(3);
+            var logCell = row.insertCell(4);
+            computerNameCell.innerHTML = logFile.computername;
+            pidCell.innerHTML = logFile.pid.toString();
+            typeCell.innerHTML = logFile.type;
+            typeCell.setAttribute('class', logFile.type);
+            dateCell.innerHTML = date.toString();
+            logCell.innerHTML = '<a href="' + logFile.file + '">log</a>';
+        };
+
+    </script>
+</body>
+</html>

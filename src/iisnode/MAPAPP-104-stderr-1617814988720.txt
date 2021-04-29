@@ -1,0 +1,16 @@
+Application has thrown an uncaught exception and is terminated:
+C:\Apps\emd-client\src\index.js:1
+import React from 'react';
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at wrapSafe (internal/modules/cjs/loader.js:1152:16)
+    at Module._compile (internal/modules/cjs/loader.js:1200:27)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1257:10)
+    at Module.load (internal/modules/cjs/loader.js:1085:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:950:14)
+    at Module.require (internal/modules/cjs/loader.js:1125:19)
+    at require (internal/modules/cjs/helpers.js:75:18)
+    at Object.<anonymous> (C:\Program Files\iisnode\interceptor.js:210:1)
+    at Module._compile (internal/modules/cjs/loader.js:1236:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1257:10)

@@ -33,7 +33,7 @@ export default class Map extends Component {
 
   fetchGrid() {
     this.toggleBottomNav();
-    fetch("http://gis17-01:8000/grid", {
+    fetch("https://emd-server.sc811.com//grid", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -198,7 +198,7 @@ export default class Map extends Component {
     });
 
     const fetchIntersect = (datapoints, type) => {
-      fetch("http://gis17-01:8000/draw", {
+      fetch("https://emd-server.sc811.com//draw", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -314,7 +314,7 @@ export default class Map extends Component {
   }
 
   countyChecker(name) {
-    fetch("http://gis17-01:8000/countyselect", {
+    fetch("https://emd-server.sc811.com//countyselect", {
       method: "POST",
       headers: {
         "content-type": "application/json",
