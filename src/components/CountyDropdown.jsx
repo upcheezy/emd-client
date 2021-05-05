@@ -5,7 +5,7 @@ export default class CountyDropdown extends Component {
   state = {
     counties: [],
     value: "",
-    error: null,
+    error: null
   };
 
   setCounties = (counties) => {
@@ -40,6 +40,7 @@ export default class CountyDropdown extends Component {
         value: e.target.value,
       },
       () => {
+        console.log(this.state.value)
         this.props.onAction(this.state.value);
       }
     );

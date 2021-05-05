@@ -29,6 +29,7 @@ export default class Map extends Component {
     map: "map",
     img: "sat",
     mbcntrl: "mapboxgl-ctrl-top-right .mapboxgl-ctrl",
+    spinner: false
   };
 
   fetchGrid() {
@@ -314,6 +315,7 @@ export default class Map extends Component {
   }
 
   countyChecker(name) {
+    this.handleSpinner()
     fetch("https://emd-server.sc811.com//countyselect", {
       method: "POST",
       headers: {
@@ -326,6 +328,7 @@ export default class Map extends Component {
       }),
     })
       .then((res) => {
+        
         if (!res.ok) {
           throw new Error(res.status);
         }
@@ -381,9 +384,18 @@ export default class Map extends Component {
           { source: "maine" }
         );
         this.fetchGrid();
+        this.handleSpinner()
       })
+      // .then(() => {
+      //   this.handleSpinner()
+      // })
       .catch((error) => this.setState({ error }));
   }
+
+  handleSpinner = () => {
+    // console.log("spinning");
+    this.setState({ spinner: !this.state.spinner })
+  };
 
   layerSwitcher(e) {
     if (this.state.layerId === "satellite-streets-v10") {
@@ -520,6 +532,13 @@ export default class Map extends Component {
     return (
       <div className="container">
         <div id={this.state.map}></div>
+        <div>
+          {this.state.spinner ? (<div className='spinner-background'>
+            <div className='spinner'></div>
+          </div>
+          ) : ''
+          }
+        </div>
         <div className="layerMenu">
           <img
             src={this.state.src}
