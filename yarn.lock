@@ -1291,10 +1291,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/geojson-types/-/geojson-types-1.0.2.tgz#9aecf642cb00eab1080a57c4f949a65b4a5846d6"
   integrity sha512-e9EBqHHv3EORHrSfbR9DqecPNn+AmuAoQxV6aL8Xu30bJMJR1o8PZLZzpk1Wq7/NfCbuhmakHTPYRhoqLsXRnw==
 
-"@mapbox/geojsonhint@^2.0.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/geojsonhint/-/geojsonhint-2.2.0.tgz#75ca94706e9a56e6debf4e1c78fabdc67978b883"
-  integrity sha512-8qQYRB+/2z2JsN5s6D0WAnpo69+3V3nvJsSFLwMB1dsaWz1V4oZeuoje9srbYAxxL8PXCwIywfhYa3GxOkBv5Q==
+"@mapbox/geojsonhint@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/geojsonhint/-/geojsonhint-3.0.0.tgz#42448232ce4236cb89c1b69c36b0cadeac99e02e"
+  integrity sha512-zHcyh1rDHYnEBd6NvOWoeHLuvazlDkIjvz9MJx4cKwcKTlfrqgxVnTv1QLnVJnsSU5neJnhQJcgscR/Zl4uYgw==
   dependencies:
     concat-stream "^1.6.1"
     jsonlint-lines "1.7.1"
@@ -1307,15 +1307,15 @@
   resolved "https://registry.yarnpkg.com/@mapbox/jsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
   integrity sha1-zlblOfg1UrWNENZy6k1vya3HsjQ=
 
-"@mapbox/mapbox-gl-draw@^y1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-draw/-/mapbox-gl-draw-1.1.2.tgz#247b3f0727db34c2641ab718df5eebeee69a2585"
-  integrity sha512-DWtATUAnJaGZYoH/y2O+QTRybxrp5y3w3eV5FXHFNVcKsCAojKEMB8ALKUG2IsiCKqV/JCAguK9AlPWR7Bjafw==
+"@mapbox/mapbox-gl-draw@^1.1.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-draw/-/mapbox-gl-draw-1.2.2.tgz#1293db9912464128daa58335fc989defa9f90eda"
+  integrity sha512-CmMSe6siErQD/LOPoF6DNBsSvIEfLEFvSjocBcXbBLgbnevhWjwQd1BJ/DYt1y9bGlPiSjowQ4s4JBg9y2L8Gw==
   dependencies:
     "@mapbox/geojson-area" "^0.2.1"
     "@mapbox/geojson-extent" "^0.3.2"
     "@mapbox/geojson-normalize" "0.0.1"
-    "@mapbox/geojsonhint" "^2.0.0"
+    "@mapbox/geojsonhint" "3.0.0"
     "@mapbox/point-geometry" "0.1.0"
     hat "0.0.3"
     lodash.isequal "^4.2.0"
@@ -4651,6 +4651,15 @@ concat-stream@^1.5.0, concat-stream@^1.6.1:
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
+concat-stream@~1.5.0:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.5.2.tgz#708978624d856af41a5a741defdd261da752c266"
+  integrity sha1-cIl4Yk2FavQaWnQd790mHadSwmY=
+  dependencies:
+    inherits "~2.0.1"
+    readable-stream "~2.0.0"
+    typedarray "~0.0.5"
+
 concat-stream@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-2.0.0.tgz#414cf5af790a48c60ab9be4527d56d5e41133cb1"
@@ -6797,9 +6806,9 @@ hoist-non-react-statics@^3.1.0:
     react-is "^16.7.0"
 
 hosted-git-info@^2.1.4:
-  version "2.8.8"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
-  integrity sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
+  version "2.8.9"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
+  integrity sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==
 
 hpack.js@^2.1.6:
   version "2.1.6"
@@ -8776,7 +8785,7 @@ minimist@1.2.0:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
   integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=
 
-minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5:
+minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5, minimist@~1.2.0:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
@@ -10454,6 +10463,11 @@ private@^0.1.8:
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"
   integrity sha512-VvivMrbvd2nKkiG38qjULzlc+4Vx4wm/whI9pQD35YrARNnhxeiRktSOhSukRLFNlzg6Br/cJPet5J/u19r/mg==
 
+process-nextick-args@~1.0.6:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
+  integrity sha1-FQ4gt1ZZCtP5EJPyWk8q2L/zC6M=
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
@@ -10975,6 +10989,18 @@ readable-stream@^3.0.2, readable-stream@^3.0.6, readable-stream@^3.1.1:
     inherits "^2.0.3"
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
+
+readable-stream@~2.0.0:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.0.6.tgz#8f90341e68a53ccc928788dacfcd11b36eb9b78e"
+  integrity sha1-j5A0HmilPMySh4jaz80Rs265t44=
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "~1.0.0"
+    process-nextick-args "~1.0.6"
+    string_decoder "~0.10.x"
+    util-deprecate "~1.0.1"
 
 readdirp@^2.2.1:
   version "2.2.1"
@@ -12039,6 +12065,11 @@ string_decoder@^1.0.0, string_decoder@^1.1.1:
   dependencies:
     safe-buffer "~5.2.0"
 
+string_decoder@~0.10.x:
+  version "0.10.31"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
+  integrity sha1-YuIDvEF2bGwoyfyEMB2rHFMQ+pQ=
+
 string_decoder@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
@@ -12521,7 +12552,7 @@ type@^2.0.0:
   resolved "https://registry.yarnpkg.com/type/-/type-2.0.0.tgz#5f16ff6ef2eb44f260494dae271033b29c09a9c3"
   integrity sha512-KBt58xCHry4Cejnc2ISQAF7QY+ORngsWfxezO68+12hKV6lQY8P/psIkcbjeHWn7MqcgciWJyCCevFMJdIXpow==
 
-typedarray@^0.0.6:
+typedarray@^0.0.6, typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
@@ -13003,6 +13034,14 @@ websocket-extensions@>=0.1.1:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
   integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
+
+wellknown@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/wellknown/-/wellknown-0.5.0.tgz#09ae9871fa826cf0a6ec1537ef00c379d78d7101"
+  integrity sha1-Ca6YcfqCbPCm7BU37wDDedeNcQE=
+  dependencies:
+    concat-stream "~1.5.0"
+    minimist "~1.2.0"
 
 wgs84@0.0.0:
   version "0.0.0"
