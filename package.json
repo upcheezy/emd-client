@@ -19,7 +19,7 @@
     "react-mapbox-gl": "^4.4.0",
     "react-mapbox-gl-draw": "^1.0.6",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "wellknown": "^0.5.0"
   },
   "resolutions": {
